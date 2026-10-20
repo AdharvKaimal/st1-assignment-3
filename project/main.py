@@ -4,7 +4,7 @@
 import argparse
 
 from smartcare.console import run_demo, run_menu
-
+# this is a test
 
 def main() -> None:
     """Run the demo, or report the intentionally incomplete interactive
