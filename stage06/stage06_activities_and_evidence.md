@@ -11,23 +11,35 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 
 ### FR-02 Patient Search
 
-- Title: [response]
-- Context: [response]
-- Requirement: [response]
-- Acceptance criteria: [response]
-- Scope: [response]
-- Definition of Done: [response]
+- Title: Find a registered patient by ID.
+- Context: PatientService.find_patient is currently unfinished. It needs to retrieve an existing patient from the shared data store.
+- Requirement: FR-02 Patient Search
+- Acceptance criteria: 
+  - A known patient ID returns the same Patient object stored in the data store.
+  
+  - IDs are case-sensitive.
+  - Blank or non-string IDs raise ValueError.
+  - A valid but unknown ID raises LookupError.
+  - Searching does not create a replacement patient or change stored records.
+
+- Scope: Implement PatientService.find_patient in services.py and add relevant tests in tests/test_services.py. Use the existing data store validation.
+- Definition of Done: All the acceptance criteria are met, testing of new and supplied code are passing with review of another teammate.
 - Owner: [response]
 - Actual issue link: [response]
 
 ### FR-06 Appointment Cancellation with FR-07 retained history
 
-- Title: [response]
-- Context: [response]
-- Requirement: [response]
-- Acceptance criteria: [response]
-- Scope: [response]
-- Definition of Done: [response]
+- Title: Cancel a scheduled appointment and retain its history.
+- Context: AppointmentService.cancel_appointment is currently unfinished. It needs to cancel an existing scheduled appointment while keeping the appointment in the shared data store.
+- Requirement: FR-06 Appointment Cancellation and FR-07 retained history
+- Acceptance criteria:
+  - Cancelling a SCHEDULED appointment changes its status to CANCELLED.
+  - Cancellation returns the same stored Appointment object.
+  - The cancelled appointment remains retrievable from the data store.
+  - Cancelling an already CANCELLED appointment raises ValueError and leaves its state unchanged.
+  - Cancelling a COMPLETED appointment raises ValueError and leaves its state unchanged.
+- Scope: Implement AppointmentService.cancel_appointment in services.py and add relevant tests in tests/test_services.py. Use Appointment.cancel() without directly assigning protected state or deleting the appointment.
+- Definition of Done: All acceptance criteria are met, new and supplied tests pass. Another team member reviews the changes.
 - Owner: [response]
 - Actual issue link: [response]
 
