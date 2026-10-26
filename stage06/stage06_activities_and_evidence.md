@@ -45,34 +45,34 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 
 ## B Commit quality
 
-| Original example | Strong or Weak | Reason |
-|---|---|---|
-| changes | [select] | [response] |
-| final version | [select] | [response] |
-| Add patient search by ID | [select] | [response] |
-| fix stuff | [select] | [response] |
-| Prevent cancellation of completed appointments | [select] | [response] |
+| Original example | Strong or Weak | Reason                                                                           |
+|---|----------------|----------------------------------------------------------------------------------|
+| changes | weak           | Does not explain what was changed                                                |
+| final version | weak           | There could be more updates needed and also doesn't really explain what changes. |
+| Add patient search by ID | Strong         | Clearly shows what changed and what was added                                    |
+| fix stuff | Weak           | doesn't explain which problem was fixed                                          |
+| Prevent cancellation of completed appointments | Strong         | Clearly shows what has changed and shows the invalid action that was fixed.      |
 
 ## C Over scoped PR review
 
 A cancellation PR also renames unrelated patient fields, restructures unrelated code and adds a new dependency.
 
-- Scope concerns: [response]
-- Responsibility and architecture concerns: [response]
-- Testing and review concerns: [response]
-- Changes to remove or separate, with reasons: [response]
+- Scope concerns:  Renaming unrelated patient fields, restructuring unrelated code and adding a new dependency go beyond the cancellation task.
+- Responsibility and architecture concerns: Appointment should control cancellation rules, while AppointmentService finds the appointment and calls cancel(). Unrelated changes could disrupt existing responsibilities.
+- Testing and review concerns: - Testing and review concerns: Extra changes make the PR harder to review and could introduce bugs that cancellation tests do not cover.
+- Changes to remove or separate, with reasons: Keep the cancellation code and relevant tests in this PR. Move justified field renaming, restructuring and dependency changes into separate issues and PRs so they can be tested and reviewed independently.
 
 ## D Challenge a weak Copilot review
 
 GitHub Copilot says: "Looks good; tests pass."
 
-- Missing evidence: [response]
-- Follow-up review question 1: [response]
-- Follow-up review question 2: [response]
-- Follow-up review question 3: [response]
-- Follow-up review question 4: [response]
-- Follow-up review question 5: [response]
-- Additional questions if useful: [response]
+- Missing evidence: Does not explain which requirements, code or tests were checked, or provide anything to show the results
+- Follow-up review question 1:Which code changes meet each acceptance criterion?
+- Follow-up review question 2: Does cancellation call Appointment.cancel() rather than directly changing the status?
+- Follow-up review question 3: Do the tests prove the same appointment object is returned and remains stored after cancellation?
+- Follow-up review question 4: Are repeated cancellation and cancellation of completed appointments rejected without changing their state?
+- Follow-up review question 5: Are blank, invalid and unknown IDs tested for the correct exceptions?
+- Additional questions if useful: What test command was run, from which directory, and what was the actual result? Does the PR contain unrelated changes?
 
 ## E Team workflow agreement
 
