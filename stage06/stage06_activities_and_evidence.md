@@ -2,9 +2,9 @@
 
 Complete this one group record. Link actual issues, diffs, tests and reviews; avoid copying entire histories. Blank fields are intentional. Duplicate rows as needed. Use synthetic data only. Every member records their own meaningful contribution. Do not invent results, reviews or Copilot use.
 
-- Group/tutorial: [response]
-- Members, GitHub usernames and cohorts: [response]
-- Repository URL: [response]
+- Group/tutorial: Tuesday Group 4 (13:30-15:30)
+- Members, GitHub usernames and cohorts: (GitHub) AdharvKaimal, kristianreyes13, 
+- Repository URL: https://github.com/AdharvKaimal/st1-assignment-3
 - Starting SHA: [response]
 
 ## A Requirement to issue activities
@@ -78,12 +78,12 @@ GitHub Copilot says: "Looks good; tests pass."
 
 | Practice | Team agreement |
 |---|---|
-| Branch naming | [response] |
-| Commit message convention | [response] |
-| PR size | [response] |
-| Another-member review requirement | [response] |
-| Merge rule | [response] |
-| Significant Copilot disclosure rule | [response] |
+| Branch naming | "Code-{Implementation}" and "stage06-{Author/Editor}" |
+| Commit message convention | Standard "Add", "Edit", "Remove", with capitalised operators "AND", "OR", "WITH", "OF", etc. |
+| PR size | Limited to Stage Activities and Evidence Document AND project Code (.py) files |
+| Another-member review requirement | Peer-review, 1 team member reviews work of work pushed to main. |
+| Merge rule | Request made to main repository WITH outlined changes notes. |
+| Significant Copilot disclosure rule | All CoPilot (or AI) applications and uses must be disclosed within Push Requests and Commit Notes used when updating the main repository. Additional disclosure is also required if a stage activity permits usage. |
 
 ## F Issue and backlog index
 
@@ -162,43 +162,43 @@ Why is a high commit count not necessarily evidence of strong contribution?
 
 1. What is version control?
 
-[response]
+RESPONSE: Version Control (VC) is a digital software engineering practice of managing and tracking the additions and changes to files in software over time. It is different from a Version Control System (VCS), which is the specific tool used in the development of software manged with Version Control.
 
 2. Why is a feature branch useful?
 
-[response]
+RESPONSE: The feature of branches in Version Control Systems like GitHub, help to isolate segments of code, usually unfinished or in-development, from the main codebase. This ensures that the main branch or main codebase is stable and bug-free. Branches also enable developers to work in parallel. Additionally, this feature helps developers to submit Push Requests (PRs), which allow discussion and review before changes are merged, which also helps in areas such as code traceability.
 
 3. What makes a commit a good engineering commit?
 
-[response]
+RESPONSE: A good commit on Version Control System tools like GitHub usually is focused on dealing with one primary issue. This is best practice so that changes can be later reviewed and potentially reversible if needed. A good commit should also have short, descriptive messaging, with an organised and readable format.
 
 4. What is a pull request?
 
-[response]
+RESPONSE: In a Version Control System, a Pull Request (PR) is a feature allowing individual developers or collaborators to propose changes to the main codebase or project. This system allows developers to work in parallel and also review and discuss changes, edits and implementations to the main codebase of a project.
 
 5. What is the purpose of code review?
 
-[response]
+RESPONSE: Code reviews are practices in software development that allow teams to identify bugs or defects within a project, improve the quality of the code within the project and also transfer knowledge on the changes and implementations within the program. This practice ensures that code the overal program/software is maintainable and the design of the program is validated.
 
 6. What does a Git diff show?
 
-[response]
+RESPONSE: Within GitHub, Git diff shows the differences between different states of the respository in a line-by-line sense. This feature also shows additional statistical information, such as the number of lines added, removed, context lines, and the counts of changes in the differing versions of the respository.
 
 7. What is a Definition of Done?
 
-[response]
+RESPONSE: The Defintion of Done (DoD) is a framework or criteria that determines if a task has been accomplished and is ready for release. This framework is an a common agreement to ensure all work meets agreed-upon standards and quality control before it is deployed or considered finished. This includes aspects like coding, testing, compiling and documentation.
 
 8. What is the appropriate role of GitHub Copilot in pull-request review?
 
-[response]
+RESPONSE: GitHub Copilot is a basic first-pass reviewer when considering pull-request reviews. However, GitHub Copilot should be limited to this role, as the judgement of human developers determines the overall code reviews and implementation of changes and programming. GitHub Copilot can act to provide potential solutions in terms fo bugs and smaller issues, as well as basic analysis and assessment of code or other changes. However, ultimately, it is up to the human developer to approve changes and exercise reasonable judgement.
 
 9. Why should individual contribution not be judged only by commit count?
 
-[response]
+RESPONSE: Commit counts do not provide adequate judgements of contribution or activity by developers, since it measures activity and number of changes regardless of size, rather than actual productivity. Complex and careful implementation of various stages and implementations may take only a few commits, whereas continuous activity produces a large amount of commits. This does not necessarily acknowledge the contribution made by each developer working on the project since work is distributed unevenly across commits.
 
 10. What is the Stage 6 engineering rule?
 
-[response]
+RESPONSE: The principle of collaborative work, communication and creating a character in planning the implementation of a project. This early stage involves the development of agreements between team members, early roles and agreed-upon rules for the project.
 
 ## M Completion and handover
 
