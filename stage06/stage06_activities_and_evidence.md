@@ -3,7 +3,7 @@
 Complete this one group record. Link actual issues, diffs, tests and reviews; avoid copying entire histories. Blank fields are intentional. Duplicate rows as needed. Use synthetic data only. Every member records their own meaningful contribution. Do not invent results, reviews or Copilot use.
 
 - Group/tutorial: Tuesday Group 4 (13:30-15:30)
-- Members, GitHub usernames and cohorts: (GitHub) AdharvKaimal, kristianreyes13, 
+- Members, GitHub usernames and cohorts: (GitHub) AdharvKaimal, kristianreyes13, jesshall902
 - Repository URL: https://github.com/AdharvKaimal/st1-assignment-3
 - Starting SHA: [response]
 
@@ -24,7 +24,7 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 
 - Scope: Implement PatientService.find_patient in services.py and add relevant tests in tests/test_services.py. Use the existing data store validation.
 - Definition of Done: All the acceptance criteria are met, testing of new and supplied code are passing with review of another teammate.
-- Owner: [response]
+- Owner: kristianreyes13
 - Actual issue link: [response]
 
 ### FR-06 Appointment Cancellation with FR-07 retained history
@@ -40,18 +40,18 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
   - Cancelling a COMPLETED appointment raises ValueError and leaves its state unchanged.
 - Scope: Implement AppointmentService.cancel_appointment in services.py and add relevant tests in tests/test_services.py. Use Appointment.cancel() without directly assigning protected state or deleting the appointment.
 - Definition of Done: All acceptance criteria are met, new and supplied tests pass. Another team member reviews the changes.
-- Owner: [response]
+- Owner: kristianreyes13
 - Actual issue link: [response]
 
 ## B Commit quality
 
-| Original example | Strong or Weak | Reason                                                                           |
+| Original example | Strong or Weak | Reason |
 |---|----------------|----------------------------------------------------------------------------------|
-| changes | weak           | Does not explain what was changed                                                |
-| final version | weak           | There could be more updates needed and also doesn't really explain what changes. |
-| Add patient search by ID | Strong         | Clearly shows what changed and what was added                                    |
-| fix stuff | Weak           | doesn't explain which problem was fixed                                          |
-| Prevent cancellation of completed appointments | Strong         | Clearly shows what has changed and shows the invalid action that was fixed.      |
+| changes | weak | Does not explain what was changed |
+| final version | weak | There could be more updates needed and also doesn't really explain what changes. |
+| Add patient search by ID | Strong | Clearly shows what changed and what was added |
+| fix stuff | Weak | doesn't explain which problem was fixed                                          |
+| Prevent cancellation of completed appointments | Strong | Clearly shows what has changed and shows the invalid action that was fixed. |
 
 ## C Over scoped PR review
 
@@ -67,7 +67,7 @@ A cancellation PR also renames unrelated patient fields, restructures unrelated 
 GitHub Copilot says: "Looks good; tests pass."
 
 - Missing evidence: Does not explain which requirements, code or tests were checked, or provide anything to show the results
-- Follow-up review question 1:Which code changes meet each acceptance criterion?
+- Follow-up review question 1: Which code changes meet each acceptance criterion?
 - Follow-up review question 2: Does cancellation call Appointment.cancel() rather than directly changing the status?
 - Follow-up review question 3: Do the tests prove the same appointment object is returned and remains stored after cancellation?
 - Follow-up review question 4: Are repeated cancellation and cancellation of completed appointments rejected without changing their state?
@@ -156,7 +156,7 @@ Repeat per member. Include only categories that describe actual work; write not 
 
 Why is a high commit count not necessarily evidence of strong contribution?
 
-[response]
+Commit counts do not provide adequate judgements of contribution or activity by developers, since it measures activity and number of changes regardless of size, rather than actual productivity. Complex and careful implementation of various stages and implementations may take only a few commits, whereas continuous activity produces a large amount of commits. This does not necessarily acknowledge the contribution made by each developer working on the project since work is distributed unevenly across commits.
 
 ## L Stage 6 formative questions
 
