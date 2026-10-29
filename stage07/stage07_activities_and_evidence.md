@@ -98,7 +98,19 @@ Use descriptive test names such as test_cancel_changes_status() or test_blank_pa
 
 | Test ID | Requirement | Acceptance criterion | Positive / Negative / Boundary | Test intention | Observable result expected | Added evidence beyond supplied tests |
 |---|---|---|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] | [complete] | [complete] | [complete] |
+| TC-FR01-01 | FR-01 | AC-01.1 | Positive | test_register_patient_stores_valid_data() | Patient record persists in store; lookup by new ID returns the exact registered data. | Supplied tests only asserted object construction (is not None). This proves end-to-end storage and retrieval, satisfying the "stored" clause of AC-01.1. | 
+| TC-FR01-02 | FR-01 | AC-01.2 | Negative | test_duplicate_patient_id_is_rejected() | System raises/returns a duplicate-ID error; no second record is created; original record unchanged. | Supplied tests never exercised collision handling. Adds coverage of the uniqueness constraint invariant. |
+| TC-FR01-03 | FR-01 | Supporting contract: identifier must be non-blank after trimming (revision 2) | Boundary	test_blank_patient_id_is_rejected()	Whitespace-only or empty ID triggers validation error before persistence; distinct from duplicate-ID error. | Blank-ID validation has no canonical AC; this quotes the precise public contract under FR-01 rather than mislabeling it as AC-01.2. Supplies boundary evidence (empty vs. whitespace variants). |
+| TC-FR02-01 | FR-02 | AC-02.1 / AC-02.2 | Positive + Negative | test_lookup_known_and_unknown_patient_reports_correctly() | Known ID returns the patient object; unknown ID reports absence (e.g., None/not-found), not an exception or wrong record. | Supplied tests lacked any lookup verification. Confirms both halves of the paired AC in one controlled scenario. |
+| TC-FR03-01 | FR-03 | Practitioner registration scope (lookup = supporting operation) | Positive | test_register_practitioner_makes_it_bookable() | Valid practitioner with unique ID is registered and subsequently resolvable for booking. | Establishes the prerequisite state other FRs depend on; supplied tests assumed practitioners existed without proving registration. | 
+| TC-FR04-01 | FR-04 | AC-03.1 | Positive | test_booking_free_slot_creates_scheduled_appointment() | Registered participants + unique ID + free time yield a stored appointment with status SCHEDULED. | Supplied test stopped at object creation. This verifies persistence and the specific initial status value. | 
+| TC-FR04-02 | FR-04 | AC-03.2 | Negative | test_booking_unknown_participant_is_rejected() | Booking with unknown patient or practitioner fails; nothing is persisted. | Adds referential-integrity evidence; supplied tests used only valid fixtures. | 
+| TC-FR05-01 | FR-05 | AC-04.1 / AC-04.2 | Negative + Positive | test_same_practitioner_exact_time_conflicts_other_practitioner_allowed() | Same practitioner/exact time/SCHEDULED → rejected; different practitioner same time → accepted. | Supplied tests had no concurrency/conflict logic. Proves both the block and the permitted case, preventing over-restrictive implementations. |
+| TC-FR06-01 | FR-06 | AC-05.1 | Positive | test_cancel_changes_status() | SCHEDULED appointment transitions to CANCELLED in the store.	| Replaces the useless assert True with a concrete state-transition assertion tied to AC-05.1. | 
+| TC-FR06-02 | FR-06 | AC-05.3 | Negative | test_repeat_cancellation_is_rejected() | Second cancel attempt on a CANCELLED appointment is rejected; status remains CANCELLED. | Supplies invalid-state-transition evidence absent from all supplied tests. | 
+| TC-FR07-01 | FR-07 | AC-05.2 | Positive | test_cancelled_appointment_remains_retrievable_in_session() | After cancellation, history lookup still returns the appointment with status CANCELLED. | Proves retention/persistence of cancelled records, not just the status flag change. |
+| TC-FR08-01 | FR-08 | AC-06.1 | Positive | test_find_appointment_by_known_id_returns_that_appointment() | Known appointment ID resolves to that exact appointment object/data. | Verifies identity/correctness of retrieval rather than mere non-nullity. |
+
 
 ## D Arrange Act Assert Record
 
@@ -106,7 +118,18 @@ Arrange test data; act on one meaningful behaviour; assert the required observab
 
 | Test ID | Arrange | Act | Assert | Why meaningful / why assertion proves criterion |
 |---|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] | [complete] |
+| TC-FR01-01 | Create Patient(name="A", id="P1"); call store.add(patient). | result = store.lookup("P1"). | assert result is not None and result.name == "A". | Proves storage and retrieval (AC-01.1), not just object creation. | 
+| TC-FR01-02 | Call store.add(Patient(id="P1")) once. | Call store.add(Patient(id="P1")) again. | assert len(store.lookup_all()) == 1. | Proves uniqueness constraint (AC-01.2); no duplicate record persisted. |
+| TC-FR01-03 | Prepare patient data with id="" or id="   ". | Call store.add(...). | with pytest.raises(ValidationError): ... | Proves blank-ID boundary validation (Supporting Contract); rejects invalid input. | 
+| TC-FR02-01 | Register a known patient; ensure unknown ID doesn't exist. | Lookup known ID; Lookup unknown ID. | assert known_result is not None; assert unknown_result is None. | Proves correct lookup for both success and absence (AC-02.1/02.2). |
+| TC-FR03-01 | Create Practitioner(id="Dr1"). | Call practitioner_store.add(...). | assert practitioner_store.lookup("Dr1") is not None. | Proves practitioner registration prerequisite for booking (FR-03). | 
+| TC-FR04-01 | Register patient and practitioner; define free time slot. | Call booking_service.schedule(patient_id, practitioner_id, slot). | assert appointment.status == AppointmentStatus.SCHEDULED. | Proves successful booking and status assignment (AC-03.1). |
+| TC-FR04-02 | Define time slot; use unregistered patient ID. | Call booking_service.schedule(...).	with pytest.raises(ValueError) |  Proves referential integrity rejection (AC-03.2). |
+| TC-FR05-01 | Book Practitioner A for 10:00. | Attempt to book Practitioner A for 10:00; Book Practitioner B for 10:00. | with pytest.raises(ConflictError): ...; assert B_booked. | Proves conflict detection and allowance of others (AC-04.1/04.2). | 
+| TC-FR06-01 | Create SCHEDULED appointment. | Call booking_service.cancel(appointment_id). | assert appointment.status == AppointmentStatus.CANCELLED.	Proves status transition behavior (AC-05.1). | 
+| TC-FR06-02 | Create and cancel an appointment (status = CANCELLED). | Call booking_service.cancel(appointment_id) again. | with pytest.raises(StateError): ... | Proves idempotency/rejection of repeated cancellation (AC-05.3). | 
+| TC-FR07-01 | Cancel an appointment. | Call history_store.lookup(appointment_id). | assert result.status == AppointmentStatus.CANCELLED. | Proves history retention (AC-05.2). |
+| TC-FR08-01 | Create and store an appointment with ID "A1". | Call booking_service.find("A1"). | assert result.id == "A1". | Proves correct identity retrieval (AC-06.1). |
 
 ## E Domain Test Evidence
 
@@ -114,7 +137,18 @@ Cover Patient/Practitioner construction and validation; Appointment construction
 
 | Test ID | Behaviour | Test file/function | Result |
 |---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] |
+| TC-FR01-01 | Patient construction with valid data and storage. | awaiting implementation | X |
+| TC-FR01-02 | Patient construction with duplicate ID rejection. | awaiting implementation | X |
+| TC-FR01-03 | Patient construction with blank/whitespace ID rejection. | awaiting implementation | X |
+| TC-FR02-01 | Patient lookup for known vs. unknown ID. | awaiting implementation | X |
+| TC-FR03-01 | Practitioner construction with valid data and storage. | awaiting implementation | X |
+| TC-FR04-01 | Appointment construction with valid data and initial SCHEDULED status. | awaiting implementation | X |
+| TC-FR04-02 | Appointment construction with unknown participant rejection. | awaiting implementation | X |
+| TC-FR05-01 | Appointment construction conflict (same practitioner/time) and uniqueness (different practitioner). | awaiting implementation | X |
+| TC-FR06-01 | Appointment cancellation (SCHEDULED to CANCELLED). | awaiting implementation | X | 
+| TC-FR06-02 | Illegal state transition (CANCELLED to CANCELLED). | awaiting implementation | X | 
+| TC-FR07-01 | Appointment cancellation history retention.	| awaiting implementation | X |
+| TC-FR08-01 | Appointment retrieval by known ID. | awaiting implementation | X | 
 
 ## F Service Test Evidence
 
