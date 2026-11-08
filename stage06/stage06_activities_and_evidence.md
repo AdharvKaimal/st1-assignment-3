@@ -25,7 +25,7 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 - Scope: Implement PatientService.find_patient in services.py and add relevant tests in tests/test_services.py. Use the existing data store validation.
 - Definition of Done: All the acceptance criteria are met, testing of new and supplied code are passing with review of another teammate.
 - Owner: kristianreyes13
-- Actual issue link: [response]
+- Actual issue link: https://github.com/AdharvKaimal/st1-assignment-3/issues/10
 
 ### FR-06 Appointment Cancellation with FR-07 retained history
 
@@ -41,7 +41,7 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 - Scope: Implement AppointmentService.cancel_appointment in services.py and add relevant tests in tests/test_services.py. Use Appointment.cancel() without directly assigning protected state or deleting the appointment.
 - Definition of Done: All acceptance criteria are met, new and supplied tests pass. Another team member reviews the changes.
 - Owner: kristianreyes13
-- Actual issue link: [response]
+- Actual issue link: https://github.com/AdharvKaimal/st1-assignment-3/issues/11
 
 ## B Commit quality
 
@@ -91,8 +91,8 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 
 | Issue link | Requirement | Owner | Acceptance criteria or precise link | Status |
 |---|---|---|---|---|
-| [issue 1] | [response] | [response] | [response] | [response] |
-| [issue 2] | [response] | [response] | [response] | [response] |
+| https://github.com/AdharvKaimal/st1-assignment-3/issues/10 | FR-02 Patient Search | kristianreyes13 | See Issue #10 for acceptance criteria | Closed |
+| https://github.com/AdharvKaimal/st1-assignment-3/issues/11 | FR-06 Appointment Cancellation and FR-07 Retained History | kristianreyes13 | See Issue #11 for acceptance criteria | Closed |
 
 ## G Pull request evidence
 
