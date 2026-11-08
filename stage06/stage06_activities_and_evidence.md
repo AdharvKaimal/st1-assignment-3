@@ -5,7 +5,7 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 - Group/tutorial: Tuesday Group 4 (13:30-15:30)
 - Members, GitHub usernames and cohorts: (GitHub) AdharvKaimal, kristianreyes13, jesshall902
 - Repository URL: https://github.com/AdharvKaimal/st1-assignment-3
-- Starting SHA: [response]
+- Starting SHA: 6957111ef85941b40c9ff99835e18c9ae0843b87
 
 ## A Requirement to issue activities
 
@@ -98,23 +98,41 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 
 Repeat this block per PR. Record actual events, not planned approvals.
 
-- PR link and title: [response]
-- Linked issue and requirement: [response]
-- Feature branch: [response]
-- Changed behaviour: [response]
-- Meaningful commits: [links]
-- Test command, directory and observed result: [response]
-- Another-member reviewer: [response]
-- Human observations recorded before Copilot: [link and time]
-- Requirement, responsibilities, test assertions and unrelated-scope checks: [response]
-- Key feedback: [response]
-- Author response/change and verification: [response]
-- Reviewer recheck and approval: [link]
-- Merge outcome and SHA: [response]
-- Significant Copilot assistance: [summary or none]
-- Linked issue closure: [response]
-- Each member updated main: [member and confirmation]
-- Integrated verification after merge: [command, directory, result and code SHA]
+- PR link and title: https://github.com/AdharvKaimal/st1-assignment-3/pull/6 - *Code for patient,prac,cancel*
+- Linked issue and requirement: #10 FR-02 Patient Search, #11 FR-06 Cancellation and FR-07 Retained History.
+- Feature branch: Code-for-Patient,Prac,Cancel
+- Changed behaviour: Implemented PatientService.find_patient, PractitionerService.find_practitioner, and AppointmentService.cancel_appointment. Also added validation and lookup behaviour.
+- Meaningful commits: Implemented PatientService.find_patient, PractitionerService.find_practitioner and AppointmentService.cancel_appointment in services.py.
+- Test command, directory and observed result: python -m pytest, project/, all tests passed.
+- Another-member reviewer: jesshall902
+- Human observations recorded before Copilot: Reviewed lookup validation and appointment cancellation. 
+- Requirement, responsibilities, test assertions and unrelated-scope checks: Lookup returns stored object, blank/invalid IDs raise, unknown IDs raise LookupError, and appointment cancellation uses Appointment.cancel().
+- Key feedback: No feedback given.
+- Author response/change and verification: No changes requested. 
+- Reviewer recheck and approval: Reviewer confirmed lookup validation, exception handling and appointment cancellation behaviour satisfied the requirements before merge. PR comment (26/10/26): https://github.com/AdharvKaimal/st1-assignment-3/pull/6#issuecomment-6433185838
+- Merge outcome and SHA: Merged 26/10/26, 57029dac98ef6ac1acca3b7371d4be3d750b6abf
+- Significant Copilot assistance: Copilot was used after the human review for the comparison, see H and I.
+- Linked issue closure: #10 and #11 closed.
+- Each member updated main: AdharvKaimal [confirmed], kristianreyes13 [confirmed], jesshall902 [confirmed].
+- Integrated verification after merge: python -m pytest, project/, 24 passed.
+
+- PR link and title: https://github.com/AdharvKaimal/st1-assignment-3/pull/7 - *Added Stage 6 tests services*
+- Linked issue and requirement: #10 FR-02 Patient Search, #11 FR-06 Cancellation and FR-07 Retained History.
+- Feature branch: feature/test-services
+- Changed behaviour: Added project/tests/test_services.py containing service-level tests for patient lookup, practitioner lookup and appointment cancellation requirements.
+- Meaningful commits: Added stage 6 tests.
+- Test command, directory and observed result: python -m pytest, project/, 24 passed.
+- Another-member reviewer: kristianreyes13
+- Human observations recorded before Copilot: Reviewed that all needed tests to check validation were included.
+- Requirement, responsibilities, test assertions and unrelated-scope checks: Blank/Invalid IDs raise ValueError, lookup returns stored object, double-cancellation raises ValueError, cancelling unknown/invalid appointment raises LookupError, and cancelled appointments remain retrievable.
+- Key feedback: No feedback.
+- Author response/change and verification: No changes requested.
+- Reviewer recheck and approval: Reviewed in class (27/10/26).
+- Merge outcome and SHA: Merged 27/10/26, 2673fcb31ea3485df31f300493ab92dc4f4837ce
+- Significant Copilot assistance: Used Copilot to check for errors after drafting initial code and to review the PR for the comparison, see H and I.
+- Linked issue closure: #10 and #11 closed.
+- Each member updated main: AdharvKaimal [confirmed], kristianreyes13 [confirmed], jesshall902 [confirmed].
+- Integrated verification after merge: python -m pytest, project/, 24 passed.
 
 ## H Copilot collaboration record
 
