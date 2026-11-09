@@ -175,18 +175,255 @@ SHA 860390bb0c0735894f013e143ccbed8f9ee7d6b0 Memebr KRestianreyes13
 Use the full handout prompt separately for BOTH defects, after E. Keep each actual prompt or accessible reference; include observed behaviour, expected behaviour, reproduction, failing test, human hypothesis, relevant code, three ranked causes and discriminating checks, with the no-rewrite/no-invented-requirements constraints.
 
 ### F8-01 Copilot review
-Actual prompt / output reference and member: [complete]
-1. Ranked suggestion / evidence check / observed evidence / correct, partly correct or wrong / accept, modify or reject with reason: [complete]
-2. Ranked suggestion / evidence check / observed evidence / correct, partly correct or wrong / accept, modify or reject with reason: [complete]
-3. Ranked suggestion / evidence check / observed evidence / correct, partly correct or wrong / accept, modify or reject with reason: [complete]
-Final human conclusion and comparison with initial hypothesis: [complete]
+Actual prompt / output reference and member: krestianreyse13
+
+I am completing SmartCare Assignment 3, Stage 8.
+
+This consultation supports:
+- Part C: F8-01 diagnosis and repair.
+- Part E: Compare suggestions with my recorded hypothesis.
+- Part F: Record Copilot findings, evidence checks and decisions.
+
+
+Observed behaviour:
+After cancelling A1, lookup raises LookupError: Appointment not found.
+Repeated cancellation also raises LookupError instead of ValueError.
+
+Expected behaviour:
+FR-07 requires cancelled appointments to remain retrievable.
+Repeated cancellation must raise ValueError without changing state.
+
+Steps to reproduce:
+Register P1 and D1, book A1, cancel A1, then find A1 or cancel it again.
+
+Failing tests:
+- test_cancelled_appointment_is_stored, test_services.py:129.
+- test_cancelled_twice_keeps_state, test_services.py:143.
+Both raise LookupError at services.py:147.
+
+My Part E hypothesis:
+Likely cause and why plausible:
+Cancellation may remove the appointment because lookup cannot find it afterwards.
+
+Evidence intended to inspect / competing explanation / discriminating check:
+Inspect cancellation and compare the appointment list before and after.
+Another possibility is that lookup hides cancelled records. If the record
+remains in the list, deletion is unlikely.
+
+Relevant faulty code:
+    def add_appointment(self, appointment: Appointment) -> None:
+        """Store an appointment with the actual registered participant
+        objects.
+
+        Raise ValueError for wrong types, duplicate IDs or unregistered
+        objects. Do not change stored records when insertion fails.
+        """
+        if not isinstance(appointment, Appointment):
+            raise ValueError('Expected an Appointment object')
+        if appointment.appointment_id in self._appointments:
+            raise ValueError('Appointment ID already exists')
+        if self.find_patient(
+            appointment.patient.patient_id,
+        ) is not appointment.patient:
+            raise ValueError('Patient must be registered in this data store')
+        if self.find_practitioner(
+            appointment.practitioner.practitioner_id,
+        ) is not appointment.practitioner:
+            raise ValueError(
+                'Practitioner must be registered in this data store',
+            )
+        self._appointments[appointment.appointment_id] = appointment
+
+    def find_appointment(self, appointment_id: str) -> Appointment | None:
+        if not isinstance(appointment_id, str) or not appointment_id.strip():
+            raise ValueError("Appointment ID cannot be blank")
+        for appointment in self.list_appointments():
+            if (appointment.appointment_id == appointment_id.strip()
+                    and appointment.status.value != "cancelled"):
+                return appointment
+        return None
+
+    def list_appointments(self) -> list[Appointment]:
+        """Return a new list containing all stored appointment objects."""
+        return list(self._appointments.values())
+
+    def has_practitioner_conflict(
+        self,
+        practitioner_id: str,
+        date_time: datetime,
+        exclude_appointment_id: str | None = None,
+    ) -> bool:
+        for appointment in self.list_appointments():
+            if (appointment.appointment_id != exclude_appointment_id
+                    and appointment.practitioner.practitioner_id != practitioner_id
+                    and appointment.date_time == date_time
+                    and appointment.status.value == "scheduled"):
+                return True
+        return False
+
+
+Task:
+Rank three likely causes. For each:
+1. Explain why it is plausible.
+2. Identify relevant code and available evidence.
+3. Suggest a check distinguishing it from the other causes.
+
+Help me evaluate the findings for Part F, but do not invent checks,
+results or Accept/Modify/Reject decisions on my behalf.
+
+Do not rewrite the application or invent requirements.
+Treat explanations as hypotheses until verified.
+Do not claim tests ran.
+1. Rank 1 — Lookup hides cancelled appointments.
+Evidence check: Inspect find_appointment().
+Observed evidence: Its condition excludes "cancelled" status.
+Judgement: Correct.
+Decision: Accept — this explains why a stored cancelled appointment cannot be found.
+
+2. Rank 2 — Cancellation removes A1 from storage.
+Evidence check: Inspect cancel_appointment() and Appointment.cancel().
+Observed evidence: They change the status without deleting the record.
+Judgement: Wrong as the root cause.
+Decision: Reject — the inspected code filters the record from lookup rather than removing it.
+
+3. Rank 3 — Lookup failure prevents the repeated-cancellation status check.
+Evidence check: Trace cancel_appointment() through find_appointment().
+Observed evidence: Lookup raises LookupError before Appointment.cancel() can reject the repeated cancellation with ValueError.
+Judgement: Partly correct.
+Decision: Modify — this explains the repeated-cancellation error, but it is a consequence of the lookup bug, not a separate service defect.
+
+Final human conclusion and comparison with initial hypothesis:
+The evidence supports lookup filtering as the root cause. The initial removal hypothesis was disproved by inspecting the cancellation methods. Fix the store lookup and keep the existing domain cancellation rules.
 
 ### F8-02 Copilot review
-Actual prompt / output reference and member: [complete]
-1. Ranked suggestion / evidence check / observed evidence / correct, partly correct or wrong / accept, modify or reject with reason: [complete]
-2. Ranked suggestion / evidence check / observed evidence / correct, partly correct or wrong / accept, modify or reject with reason: [complete]
-3. Ranked suggestion / evidence check / observed evidence / correct, partly correct or wrong / accept, modify or reject with reason: [complete]
-Final human conclusion and comparison with initial hypothesis: [complete]
+Actual prompt / output reference and member: Krestian
+
+I am completing SmartCare Assignment 3, Stage 8.
+
+This consultation supports:
+- Part D: F8-02 diagnosis and repair.
+- Part E: Compare suggestions with my recorded hypothesis.
+- Part F: Record Copilot findings, evidence checks and decisions.
+
+
+
+Observed behaviour:
+A second booking for the same practitioner at the exact same time
+does not raise ValueError.
+
+Expected behaviour:
+FR-05 blocks bookings conflicting with a SCHEDULED appointment for
+the same practitioner at the exact same time.
+AC-04.2 allows different practitioners at that time.
+
+Steps to reproduce:
+Register P1, D1 and D2. Book A1 with D1 at 09:00.
+Attempt A2 with D1 at 09:00. Separately test D2 at 09:00.
+
+Failing test:
+test_starter.py::test_conflict_rule_and_different_practitioner,
+line 127: Failed: DID NOT RAISE ValueError.
+The test stops before checking the different-practitioner outcome.
+
+My Part E hypothesis:
+human entry
+
+Likely cause and why plausible:
+Cancellation may remove the appointment because lookup cannot find it afterwards.
+
+Evidence intended to inspect / competing explanation / discriminating check:
+Inspect cancellation and compare the appointment list before and after.
+Another possibility is that lookup hides cancelled records. If the record
+remains in the list, deletion is unlikely.
+
+Relevant faulty code:
+class SmartCareDataStore:
+    """Own three in-memory collections for one SmartCare session."""
+
+    def __init__(self) -> None:
+        """Create an empty store for the current session."""
+        self._patients: dict[str, Patient] = {}
+        self._practitioners: dict[str, Practitioner] = {}
+        self._appointments: dict[str, Appointment] = {}
+
+    def add_patient(self, patient: Patient) -> None:
+        """Store a Patient; reject a wrong type or duplicate ID with
+        ValueError.
+        """
+        if not isinstance(patient, Patient):
+            raise ValueError('Expected a Patient object')
+        if patient.patient_id in self._patients:
+            raise ValueError('Patient ID already exists')
+        self._patients[patient.patient_id] = patient
+
+    def find_patient(self, patient_id: str) -> Patient | None:
+        """Return the stored patient or None; reject blank IDs with
+        ValueError.
+        """
+        return self._patients.get(required_text(patient_id, 'Patient ID'))
+
+    def list_patients(self) -> list[Patient]:
+        """Return a new list containing the stored patient objects."""
+        return list(self._patients.values())
+
+    def add_practitioner(self, practitioner: Practitioner) -> None:
+        """Store a Practitioner; reject wrong types or duplicate IDs with
+        ValueError.
+        """
+        if not isinstance(practitioner, Practitioner):
+            raise ValueError('Expected a Practitioner object')
+        if practitioner.practitioner_id in self._practitioners:
+            raise ValueError('Practitioner ID already exists')
+        self._practitioners[practitioner.practitioner_id] = practitioner
+
+    def find_practitioner(self, practitioner_id: str) -> Practitioner | None:
+        """Return the stored practitioner or None; reject blank IDs with
+        ValueError.
+        """
+        return self._practitioners.get(
+            required_text(practitioner_id, 'Practitioner ID'),
+        )
+
+    def list_practitioners(self) -> list[Practitioner]:
+        """Return a new list containing the stored practitioner objects."""
+        return list(self._practitioners.values())
+
+
+Task:
+Rank three likely causes. For each:
+1. Explain why it is plausible.
+2. Identify relevant code and available evidence.
+3. Suggest a check distinguishing it from the other causes.
+
+Help me evaluate the findings for Part F, but do not invent checks,
+results or Accept/Modify/Reject decisions on my behalf.
+
+Do not rewrite the application or invent requirements.
+Treat explanations as hypotheses until verified.
+Do not claim tests ran.
+
+
+
+1. Rank 1 — Practitioner comparison is reversed.
+Evidence check: Inspect has_practitioner_conflict().
+Observed evidence: It uses != instead of == for practitioner IDs.
+Judgement: Correct.
+Decision: Accept — this skips the same practitioner and can incorrectly block different practitioners.
+
+2. Rank 2 — Booking does not call or enforce the conflict check.
+Evidence check: Inspect book_appointment().
+Observed evidence: It calls the checker and raises ValueError when True is returned.
+Judgement: Wrong as the root cause.
+Decision: Reject — the service already calls and enforces the check.
+
+3. Rank 3 — Time or status values do not match.
+Evidence check: Inspect the failing test and appointment construction.
+Observed evidence: Both bookings use the same datetime, and A1 defaults to SCHEDULED.
+Judgement: Wrong for this reproduction.
+Decision: Reject — the time and status meet the conflict conditions.
+
+Final human conclusion and comparison with initial hypothesis:
+The reversed practitioner comparison explains the failure. My earlier cancellation hypothesis concerned F8-01 and did not explain this booking problem. The fix is to change != to == and verify both same-practitioner rejection and different-practitioner acceptance.
 
 ## G. Failing to passing regression evidence
 
