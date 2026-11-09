@@ -89,14 +89,14 @@ Cover QRY-01–04, FP-01–03, UI-01–02 and relevant FR-01–09. Explain empty
 | FP-03 test_fp03_named_key_value | queries.py appointment_sort_key | Key = (10:00, 'A4') | PASSED | tests/test_queries.py, SHA [1a5e967dd8af6c4069cf1972000d25f0368a859b] |
 | FP-03 test_fp03_key_does_not_change_appointment | queries.py appointment_sort_key | Snapshot unchanged after key calls | PASSED | tests/test_queries.py, SHA [1a5e967dd8af6c4069cf1972000d25f0368a859b] |
 | FP-03 test_fp03_sorting_uses_named_key | queries.py select_appointments | Recording key called for every D1 appointment | PASSED | tests/test_queries.py, SHA [1a5e967dd8af6c4069cf1972000d25f0368a859b] |
-| QRY-04 test_qry04_known_practitioner_without_appointments | services.py list_practitioner_appointments | Known D1, no bookings → [] | PASSED | tests/test_workflows.py, SHA [SHA2] |
-| QRY-04 test_qry04_known_practitioner_without_matching_status | services.py list_practitioner_appointments | CANCELLED filter, none → [] | PASSED | tests/test_workflows.py, SHA [SHA2] |
-| QRY-04 test_qry04_unknown_practitioner_raises_lookup_error | services.py list_practitioner_appointments | D9 → LookupError | PASSED | tests/test_workflows.py, SHA [SHA2] |
-| QRY-04 test_qry04_blank_or_invalid_id_raises_value_error | services.py list_practitioner_appointments | '', '   ', None, 1 → ValueError | PASSED | tests/test_workflows.py, SHA [SHA2] |
-| QRY-04 test_qry04_text_status_raises_value_error | services.py list_practitioner_appointments | 'scheduled' → ValueError; store unchanged | PASSED | tests/test_workflows.py, SHA [SHA2] |
-| QRY-04 test_qry04_omitted_status_keeps_history | services.py list_practitioner_appointments | Cancelled A1 listed, same object | PASSED | tests/test_workflows.py, SHA [SHA2] |
-| QRY-04 test_qry04_uses_registered_id_for_trimmed_input | services.py list_practitioner_appointments | ' D1 ' finds A1 | PASSED | tests/test_workflows.py, SHA [SHA2] |
-| QRY-04 test_qry04_returns_fresh_list | services.py list_practitioner_appointments | Repeated calls equal, distinct lists | PASSED | tests/test_workflows.py, SHA [SHA2] |
+| QRY-04 test_qry04_known_practitioner_without_appointments | services.py list_practitioner_appointments | Known D1, no bookings → [] | PASSED | tests/test_workflows.py, SHA [db5afaf0331a0699c3fd23afce10ca4348db53fb] |
+| QRY-04 test_qry04_known_practitioner_without_matching_status | services.py list_practitioner_appointments | CANCELLED filter, none → [] | PASSED | tests/test_workflows.py, SHA [db5afaf0331a0699c3fd23afce10ca4348db53fb] |
+| QRY-04 test_qry04_unknown_practitioner_raises_lookup_error | services.py list_practitioner_appointments | D9 → LookupError | PASSED | tests/test_workflows.py, SHA [db5afaf0331a0699c3fd23afce10ca4348db53fb] |
+| QRY-04 test_qry04_blank_or_invalid_id_raises_value_error | services.py list_practitioner_appointments | '', '   ', None, 1 → ValueError | PASSED | tests/test_workflows.py, SHA [db5afaf0331a0699c3fd23afce10ca4348db53fb] |
+| QRY-04 test_qry04_text_status_raises_value_error | services.py list_practitioner_appointments | 'scheduled' → ValueError; store unchanged | PASSED | tests/test_workflows.py, SHA [db5afaf0331a0699c3fd23afce10ca4348db53fb] |
+| QRY-04 test_qry04_omitted_status_keeps_history | services.py list_practitioner_appointments | Cancelled A1 listed, same object | PASSED | tests/test_workflows.py, SHA [db5afaf0331a0699c3fd23afce10ca4348db53fb] |
+| QRY-04 test_qry04_uses_registered_id_for_trimmed_input | services.py list_practitioner_appointments | ' D1 ' finds A1 | PASSED | tests/test_workflows.py, SHA [db5afaf0331a0699c3fd23afce10ca4348db53fb] |
+| QRY-04 test_qry04_returns_fresh_list | services.py list_practitioner_appointments | Repeated calls equal, distinct lists | PASSED | tests/test_workflows.py, SHA [db5afaf0331a0699c3fd23afce10ca4348db53fb] |
 
 Include practitioner isolation, every enum status/default all, equal-time ID tie-break, named-key reuse, repeated calls, empty/already-sorted fresh lists, unchanged source order/fields, known-empty/unknown/invalid service cases and retained history.
 
@@ -108,29 +108,38 @@ What the tests do and do not establish: They show correct results, new lists and
 
 | Scenario / acceptance ID | Reproducible inputs / artefact | Expected result | Observed result and state check | Evidence link |
 |---|---|---|---|---|
-| UI-01 full menu workflow | stage09/evidence/ui01_input.txt; from project/: Get-Content ../stage09/evidence/ui01_input.txt \| py main.py --interactive | P1, D1, D2 registered and found; A1 booked; A-CONFLICT rejected; A2 with D2 allowed; A1 cancelled and found as Cancelled; D1 all = A1, Scheduled = none; A3 booked in freed slot; final list A1, A3; Goodbye | [Matched expected / describe any difference]. Final D1 list showed A1 (Cancelled) and A3 (Scheduled), "2 appointments found." | stage09/evidence/ui01_output.txt; tests/test_workflows.py::test_ui01_full_menu_workflow, SHA [SHA2] |
-| UI-02 invalid-input recovery | stage09/evidence/ui02_input.txt; same command with ui02_input.txt | Each error shown (unknown choice, blank/unknown ID, duplicate, unknown participant, malformed and impossible date, unknown appointment, repeated cancel, invalid status); menu continues; A9 not reserved and later books; P1 still Alex Example | [Matched expected / describe any difference]. After the errors, A9 booked successfully and P1 was found as Alex Example. | stage09/evidence/ui02_output.txt; tests/test_workflows.py::test_ui02_invalid_input_recovery, SHA [SHA2] |
-| Automated service workflow | tests/test_workflows.py::test_service_workflow_preserves_state_and_history; also test_real_console_process_runs_ui01 | Duplicate, unknown participant, duplicate ID and conflict rejected with store unchanged; D2 allowed; A1 cancelled but found and listed; SCHEDULED filter empty; A3 books freed slot | PASSED | tests/test_workflows.py, SHA [SHA2] |
+| UI-01 full menu workflow | stage09/evidence/ui01_input.txt; from project/: Get-Content ../stage09/evidence/ui01_input.txt \| py main.py --interactive | P1, D1, D2 registered and found; A1 booked; A-CONFLICT rejected; A2 with D2 allowed; A1 cancelled and found as Cancelled; D1 all = A1, Scheduled = none; A3 booked in freed slot; final list A1, A3; Goodbye | [Matched expected / describe any difference]. Final D1 list showed A1 (Cancelled) and A3 (Scheduled), "2 appointments found." | stage09/evidence/ui01_output.txt; tests/test_workflows.py::test_ui01_full_menu_workflow, SHA [db5afaf0331a0699c3fd23afce10ca4348db53fb] |
+| UI-02 invalid-input recovery | stage09/evidence/ui02_input.txt; same command with ui02_input.txt | Each error shown (unknown choice, blank/unknown ID, duplicate, unknown participant, malformed and impossible date, unknown appointment, repeated cancel, invalid status); menu continues; A9 not reserved and later books; P1 still Alex Example | [Matched expected / describe any difference]. After the errors, A9 booked successfully and P1 was found as Alex Example. | stage09/evidence/ui02_output.txt; tests/test_workflows.py::test_ui02_invalid_input_recovery, SHA [db5afaf0331a0699c3fd23afce10ca4348db53fb] |
+| Automated service workflow | tests/test_workflows.py::test_service_workflow_preserves_state_and_history; also test_real_console_process_runs_ui01 | Duplicate, unknown participant, duplicate ID and conflict rejected with store unchanged; D2 allowed; A1 cancelled but found and listed; SCHEDULED filter empty; A3 books freed slot | PASSED | tests/test_workflows.py, SHA [db5afaf0331a0699c3fd23afce10ca4348db53fb] |
 
 Include registration/find, booking, conflict rejection, different-practitioner booking, cancellation, retrieval, listing/filtering, freed slot and exit; duplicate/unknown/blank IDs, malformed/impossible date, invalid status, unknown choice and repeated cancellation. Identify before/after state and subsequent successful action.
 
 ## E. GitHub Copilot review and human decisions
 
-Human design completed before AI: <!-- reference -->
-Actual prompt/context supplied: <!-- paste or accessible reference -->
-Actual response: <!-- accessible reference -->
+Human design completed before AI: Parts A and B, commit SHA 5baa41c6e8e20fefb826fc60d4059a431db624b4
+Actual prompt/context supplied: Handout section 8 prompt with queries.py, services.py, console.py, main.py and test summaries (QRY-01–04, FP-01–03, UI-01–02). See stage09/evidence/copilot_review.md.
+Actual response: stage09/evidence/copilot_review.md
 
 | AI finding | Code/test evidence | Severity | Accept/Modify/Reject and reason | Change or no change | Actual verification |
 |---|---|---|---|---|---|
-| | | | | | |
+| Query, service listing and run_menu still raise NotImplementedError | queries.py, services.py list_practitioner_appointments, console.py run_menu on branch Stage9/testing/and/Doc | Critical (AI) | Reject. Copilot reviewed the starter stubs, not the current branch. All three are implemented. | No change | Inspected the three files; py -m pytest -v: test_queries.py and test_workflows.py PASSED |
+| Retained history and listing not proven at service level | test_qry04_omitted_status_keeps_history, test_service_workflow_preserves_state_and_history | Critical (AI) | Reject. Based on the same stale code. Tests show cancelled A1 is found and listed as the same object. | No change | Both tests PASSED |
+| Interactive console incomplete; main.py catches NotImplementedError | main.py, console.py | Critical (AI) | Reject. main.py now calls run_menu() directly and the menu is complete. | No change | test_ui01_full_menu_workflow and test_real_console_process_runs_ui01 PASSED; UI-01 run saved |
+| Check purity: new list, source order and identities unchanged | test_qry03_*, test_fp01_*, test_fp02_* | Important | Accept the check, not a change. It matches our design and is already tested with before/after snapshots. | No change | FP-01, FP-02, QRY-03 tests PASSED |
+| Enum filtering and object identity must be verified | test_qry02_*, test_fp02_unsorted_source_reuses_unchanged_objects, test_qry04_text_status_raises_value_error | Important | Accept the check. Already covered: None = all, each enum, same objects (`is`), text status rejected. | No change | Tests PASSED |
+| Required QRY/FP/UI verifications missing | tests/test_queries.py, tests/test_workflows.py | Important (AI) | Reject. The tests exist; Copilot did not see them. | No change | py -m pytest -v: all tests PASSED |
+| Recovery and unchanged state only documented | test_ui02_invalid_input_recovery, test_service_workflow_preserves_state_and_history | Optional | Reject. Demonstrated by UI-02 (error, then successful action) and before/after store checks. | No change | Tests PASSED; UI-02 run saved |
 
-Responsibility check: explain how domain invariants, shared-store collections, service coordination, pure queries and console effects remain separate: <!-- response -->
+Copilot's main conclusion was wrong because it reviewed outdated code. Each claim was checked against the actual branch files and test results before any decision; no code was changed. Its structural comments (domain, store and service separation; enum identity with `is`) agreed with our design.
 
+Responsibility check: explain how domain invariants, shared-store collections, service coordination, pure queries and console effects remain separate: Appointment still owns the cancellation rule; the store owns collections and identity checks; services coordinate validation and call the query; the query only selects and sorts; the console only prompts, converts text, calls services and prints. No layer prints or reads input except the console.
 ## F. Required reflections
 
-1. Which integration concern was architectural rather than a filtering/sorting detail? <!-- response -->
-2. Which Copilot suggestion did you reject as over-engineering, and why? <!-- response -->
-3. How did you prove cancelled appointments remain retrievable and listable in the same session? <!-- response -->
+1. Which integration concern was architectural rather than a filtering/sorting detail? Deciding where each check belongs. The service checks the practitioner is registered, the console turns status text into the enum, and the query only filters and sorts. One store is used for the whole session so data stays until exit.
+
+2. Which Copilot suggestion did you reject as over-engineering, and why? Copilot did not suggest over-engineering. We rejected its claim that the code was unimplemented, because it had reviewed the old starter files. The current code and passing tests showed this was wrong.
+
+3. How did you prove cancelled appointments remain retrievable and listable in the same session? Tests cancel A1, then find it by ID and see it in the full list but not in the SCHEDULED list. The UI-01 run shows the same, and A3 can then book the freed slot.
 
 ## G. Ten formative answers
 
@@ -149,7 +158,7 @@ Responsibility check: explain how domain invariants, shared-store collections, s
 
 Issues and bounded branches: <!-- links -->
 PR/diff and another-member human reviewer: <!-- actual links/name -->
-Review responses and Copilot comparison: <!-- links -->
+Review responses and Copilot comparison: (https://github.com/copilot/c/8b43ceb7-2eef-449a-9d2a-2f37d314b557)
 Integrated common Stage 9 : <!-- complete -->
 Full regression command, working directory, actual count/result and evidence: <!-- complete -->
 README run instructions and scope/limitations: <!-- link -->
