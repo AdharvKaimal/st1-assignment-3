@@ -180,6 +180,15 @@ Repeat per member. Include only categories that describe actual work; write not 
 - Debugging or integration: Confirmed 24 test pass on the update main. 
 - Documentation or team support: Completed sections G, H, and I.
 
+- Member: kristianreyes13
+- Implementation: Contributed patient lookup, practitioner lookup and cancellation logic on Code-for-Patient,Prac,Cancel.
+- Testing: Contributed service test for lookup and cancellation (commit 2673fcb).
+- Review: N/A
+- Issue refinement: Drafted patient-search and cancellation acceptance criteria in Section A.
+- Design and responsibility discussion: N/A
+- Debugging or integration: Confirmed local main was updated after merging.
+- Documentation or team support: Completed Sections A-C and contributed to Section G on Activities/Complettion/Stages6/7.
+
 ## K Exit question
 
 Why is a high commit count not necessarily evidence of strong contribution?
