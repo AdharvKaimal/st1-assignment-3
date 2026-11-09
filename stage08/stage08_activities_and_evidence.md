@@ -433,11 +433,18 @@ The reversed practitioner comparison explains the failure. My earlier cancellati
 | F8-01 after repair | 64d1bf9fdc69dc5307e3f0c5cc7ca50599989f50 | py -m pytest tests/test_services.py::test_cancelled_appointment_is_stored -v  |1 passed in 0.03s. test_cancelled_appointment_is_stored confirms the cancelled appointment remains retrievable. Evidence: tests/test_services.py::test_cancelled_appointment_is_stored PASSED                                                                                                                                                                                                                                          [100%]
 | 
 | F8-02 before repair | Same faulty SHA as above | py -m pytest; project/ | In the same run, test_conflict_rule_and_different_practitioner failed at test_starter.py:127: DID NOT RAISE ValueError. Evidence: saved terminal output. |
-| F8-02 after repair | [complete] | [complete] | [complete] |
-| Full suite after both repairs, before refactor | [complete] | [complete] | [complete] |
+| F8-02 after repair | 3ff948717168705590a8d19ff0f01e36c2c6c2ab | py -m pytest tests/test_starter.py::test_conflict_rule_and_different_practitioner -v | 1 passed in 0.03s. test_conflict_rule_and_different_practitioner confirms a same-practitioner/time booking is now rejected and a different practitioner can still book that time. Evidence: tests/test_starter.py::test_conflict_rule_and_different_practitioner PASSED [100%]  |
+| Full suite after both repairs, before refactor | 56ff80c14f4add2117a0822b4de0f6e53865f468 | py -m pytest; project/ | 57 passed in 0.07s. The full suite confirms both repairs pass together with no regressions in test_domain.py, test_services.py or test_starter.py. Evidence: tests\test_domain.py, tests\test_services.py and tests\test_starter.py all passed [100%]|
 
-Explain how the assertions detect each relevant incorrect result and protect previous behaviour: [complete]
-Unrelated failures investigated / resolution: [complete or not applicable with reason]
+Explain how the assertions detect each relevant incorrect result and protect previous behaviour:
+F8-01: The tests check that cancelled A1 can still be found and that a second cancellation raises ValueError. The faulty lookup returned None, so both failed. They also check that the record and its status stay unchanged.
+
+F8-02: The test expects ValueError for a same-practitioner/time booking. The != bug allowed it, so the test failed. It also checks that a different practitioner can still book that time.
+
+The full suite (57 passed) confirms earlier behaviour still works.
+
+Unrelated failures investigated / resolution:
+Not applicable. All 3 failures before the repairs were caused by F8-01 and F8-02.
 
 ## H. Refactoring decision and before/after verification
 
