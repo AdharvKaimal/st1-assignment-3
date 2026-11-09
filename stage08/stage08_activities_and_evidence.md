@@ -429,9 +429,9 @@ The reversed practitioner comparison explains the failure. My earlier cancellati
 
 | Checkpoint | Code SHA or precise diff | Command and working directory | Actual result and artefact reference |
 |---|---|---|---|
-| F8-01 before repair | [complete] | [complete] | [complete] |
+| F8-01 before repair | 4dc37802259ccb7544915c8a435fffa39fc08126 — confirm using git rev-parse HEAD | py -m pytest; project/ | Full suite: 3 failed, 53 passed in 0.25s. test_cancelled_appointment_is_stored and test_cancelled_twice_keeps_state raised LookupError: Appointment not found. Evidence: saved terminal output. |
 | F8-01 after repair | [complete] | [complete] | [complete] |
-| F8-02 before repair | [complete] | [complete] | [complete] |
+| F8-02 before repair | Same faulty SHA as above | py -m pytest; project/ | In the same run, test_conflict_rule_and_different_practitioner failed at test_starter.py:127: DID NOT RAISE ValueError. Evidence: saved terminal output. |
 | F8-02 after repair | [complete] | [complete] | [complete] |
 | Full suite after both repairs, before refactor | [complete] | [complete] | [complete] |
 
