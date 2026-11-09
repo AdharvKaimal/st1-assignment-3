@@ -334,7 +334,7 @@ The Stage 7 engineering rule is to focus on what required behaviour each test ac
 
 ## O Stage Completion
 
-Tested Stage 7 main SHA: [complete] 
+Tested Stage 7 main SHA: 7635218 
 Full-suite result: python -m pytest, project/, 65 passed, 0 failed
 Unresolved defects and effect on baseline: None.
 Clean working tree and integration evidence: git status clean on main after pulling.
