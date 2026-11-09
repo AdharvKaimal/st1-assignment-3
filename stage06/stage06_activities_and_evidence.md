@@ -109,7 +109,7 @@ Repeat this block per PR. Record actual events, not planned approvals.
 - Requirement, responsibilities, test assertions and unrelated-scope checks: Lookup returns stored object, blank/invalid IDs raise, unknown IDs raise LookupError, and appointment cancellation uses Appointment.cancel().
 - Key feedback: No feedback given.
 - Author response/change and verification: No changes requested. 
-- Reviewer recheck and approval: Reviewer confirmed lookup validation, exception handling and appointment cancellation behaviour satisfied the requirements before merge. PR comment (26/10/26): https://github.com/AdharvKaimal/st1-assignment-3/pull/6#issuecomment-6433185838
+- Reviewer recheck and approval: Reviewed via PR comment (26/10/26): https://github.com/AdharvKaimal/st1-assignment-3/pull/6#issuecomment-6433185838.
 - Merge outcome and SHA: Merged 26/10/26, 57029dac98ef6ac1acca3b7371d4be3d750b6abf
 - Significant Copilot assistance: Copilot was used after the human review for the comparison, see H and I.
 - Linked issue closure: #10 and #11 closed.
@@ -139,7 +139,7 @@ Repeat this block per PR. Record actual events, not planned approvals.
 Record meaningful required use, not every trivial completion. Repeat per significant interaction.
 
 **Interaction 1 (PR #6)**
-- Member and task: jesshall902, reviewed PR #7 against FR-02, FR-06, and FR-07.
+- Member and task: jesshall902, reviewed PR #6 against FR-02, FR-06, and FR-07.
 - Prompt/purpose and relevant issue/diff: Used given prompt from Part H, the criteria issues from #10 and #11, and the PR #6 diff.
 - Summary of output: Copilot said find_patient returns the stored object and raises LookupError when nothing is found. It said cancel_appointment calls appointment.cancel(), returns the same object and doesn't delete anything, so the history is kept. It said the ValueError and case-sensitivity behaviour depends on the data store and Appointment.cancel().
 - Human check against actual code, requirements and tests: I checked data_store.py to make sure find_patient trims IDs and raises ValueError for blank/invalid IDs, and that the lookup was case sensitive.
@@ -162,7 +162,7 @@ Record meaningful required use, not every trivial completion. Repeat per signifi
 - Copilot noticed: The code meets FR-02, FR-06 and FR-07 by using the data store and Appointment.cancel(). It also said the extra commented-out code in find_patient and find_practitioner should be removed.
 - Overlap: We both found that the lookups returned the stored object, unknown IDs raise LookupError, and blank/invalid IDs raise ValueError. 
 - What did the human reviewer notice that Copilot did not: N/A
-- What did Copilot identify that the human reviewer initially missed: N/A
+- What did Copilot identify that the human reviewer initially missed: The extra commented-out code in find_patient and find_practitioner.
 - Unsupported or incorrect Copilot suggestion: On PR #7 it said to remove the trimming tests, but trimming is part of the Stage 6 handout's lookup contract.
 - Human judgement accepted, modified or rejected, and why: I accepted the requirement findings as they matched against the code and requirements. I rejected the trimming suggestion as it is a stated requirement in the handout.
 - Which evidence justified merge approval: 24 tests passed after all tests were added.
@@ -174,7 +174,7 @@ Repeat per member. Include only categories that describe actual work; write not 
 - Member: jesshall902
 - Implementation: N/A
 - Testing: Wrote project/tests/test_services.py, including 16 tests for lookup and cancellation (https://github.com/AdharvKaimal/st1-assignment-3/pull/7)
-- Review: Reviewed PR #6 against issues #10 and #11 (https://github.com/AdharvKaimal/st1-assignment-3/pull/7).
+- Review: Reviewed PR #6 against issues #10 and #11 (https://github.com/AdharvKaimal/st1-assignment-3/pull/6#issuecomment-6433185838).
 - Issue refinement: N/A
 - Design and responsibility discussion: N/A
 - Debugging or integration: Confirmed 24 test pass on the update main. 
@@ -238,7 +238,7 @@ RESPONSE: The principle of collaborative work, communication and creating a char
 - PR and another-member reviewer: PR #6 (https://github.com/AdharvKaimal/st1-assignment-3/pull/6), reviewed by jesshall902. PR #7 (https://github.com/AdharvKaimal/st1-assignment-3/pull/7), reviewed by kristianreyes13.
 - Unresolved issue or none: None.
 - Stage 7 handover status: Ready for tutor checkpoint.
-- Final submitted SHA if later than tested SHA: [response and evidence-only difference]
+- Final submitted SHA if later than tested SHA: e27d0d797f75f945c653cff19718261c8732dd16 *please update after final commit*
 
 - [ ] Three Stage 6 service targets completed and checked.
 - [ ] Original supplied tests retained and passing.
