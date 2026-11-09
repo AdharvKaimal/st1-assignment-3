@@ -9,11 +9,11 @@ Baseline: Stage 6 foundation, 2026 revision 2. This starter deliberately leaves 
 - Member names, GitHub usernames and UG/PG cohorts: AdharvKaimal, krestianreyes13, jesshall902
 - Shared repository URL: https://github.com/AdharvKaimal/st1-assignment-3
 - Latest completed stage: Stage 12
-- Verified code SHA: 56b92a1
+- Verified code SHA: a14ef34
 - Test command, working directory and observed result:
   Working directory: project/
   Command: python -m pytest -q
-  Result: 66 passed, 0 failed
+  Result: 95 passed, 0 failed
 - Final submitted SHA, if different from tested code SHA: [complete; explain evidence-only changes]
 
 Do not put student IDs, private peer ratings, credentials or personal contact details here.

@@ -37,7 +37,7 @@ Tutorial activity 2 and actual readiness matrix. Add exact requirement/acceptanc
 | FR-06–08 cancellation/history/find | Cancellation and retained history tests | test_cancelled_appointment_is_stored, test_cancelled_twice_keeps_state | krestianreyes13 | Yes | Reconfirmed in the final test run |
 | FR-09 and QRY/FP listing/filter/order/purity | Stage 9 query and service tests: practitioner filter, default all statuses, each status, empty vs unknown vs invalid, order by date/time then ID, new lists and unchanged source | tests/test_queries.py and tests/test_workflows.py (Stage 9 record, Section C)| jesshall902 | Yes | Reconfirmed in the final test run |
 | UI full console sequence and error recovery | test_ui01_full_menu_workflow, test_real_console_process_runs_ui01, test_ui02_invalid_input_recovery | Stage 9 record, section D | krestianreyes13 | Yes | Checked again in the final demo |
-| Session-only scope / FR-10 retired | SmartCareDataStore keeps three in-memory dictionaries that only last for the current run. There is no database or file storage in project/. | project/smartcare/data_store.py at 56b92a1 | jesshall902 | Yes | Said in the README |
+| Session-only scope / FR-10 retired | SmartCareDataStore keeps three in-memory dictionaries that only last for the current run. There is no database or file storage in project/. | project/smartcare/data_store.py at a14ef34 | jesshall902 | Yes | Said in the README |
 | PG RES and assurance integration | N/A | N/A | N/A | N/A | N/A |
 
 
@@ -45,10 +45,10 @@ Tutorial activity 2 and actual readiness matrix. Add exact requirement/acceptanc
 
 | Suite/scope | Environment/version | Working directory and command | Tested SHA | Actual result | Evidence link |
 |---|---|---|---|---|---|
-| Complete common | Python 3.14.3 on Windows, pytest 8.3.5 | project/ ; python -m pytest -q | 56b92a1 | 66 passed, 0 failed | https://github.com/AdharvKaimal/st1-assignment-3/commit/56b92a1 |
+| Complete common | Python 3.14.3 on Windows, pytest 8.3.5 | project/ ; python -m pytest -q | a14ef34 | 95 passed, 0 failed | https://github.com/AdharvKaimal/st1-assignment-3/commit/a14ef34 |
 | Complete PG if applicable | N/A | N/A | N/A | N/A | N/A |
-| Affected focused checks after correction | Python 3.14.3 on Windows, pytest 8.3.5 | project/ ; python -m pytest tests/test_services.py -q | 56b92a1 | All passed | https://github.com/AdharvKaimal/st1-assignment-3/commit/56b92a1 |
-| Full integrated recheck | Python 3.14.3 on Windows, pytest 8.3.5 | project/ ; python -m pytest -q on main after the last merge | 56b92a1 | 66 passed, 0 failed | https://github.com/AdharvKaimal/st1-assignment-3/commit/56b92a1 |
+| Affected focused checks after correction | Python 3.14.3 on Windows, pytest 8.3.5 | project/ ; python -m pytest tests/test_services.py -q | a14ef34 | All passed | https://github.com/AdharvKaimal/st1-assignment-3/commit/a14ef34 |
+| Full integrated recheck | Python 3.14.3 on Windows, pytest 8.3.5 | project/ ; python -m pytest -q on main after the last merge | a14ef34 | 95 passed, 0 failed | https://github.com/AdharvKaimal/st1-assignment-3/commit/a14ef34 |
 
 
 ## D Console and end to end demonstration
@@ -109,7 +109,7 @@ PG demonstrations through service/tests or not applicable: Not applicable.
 | Working directory / demo / interactive / test commands | project/README.md | jesshall902 | Worked |
 | Repository structure and architecture responsibilities | project/README.md | jesshall902 | Clear |
 | Responsible AI summary / synthetic-data rule | project/README.md | jesshall902 | Clear |
-| Release label/version and SHA links | root README.md | jesshall902 | Matches 56b92a1 |
+| Release label/version and SHA links | root README.md | jesshall902 | Matches a14ef34 |
 
 ## G Known limitations debt and release notes
 
@@ -159,7 +159,7 @@ Independent reviewer / feedback / response:
 Each PR was reviewed by a team member other than its author. Feedback, responses and approvals are recorded in the corresponding PRs and stage records.
 
 Integration commit / full recheck:
-Merged to main at 56b92a1. Running python -m pytest -q from project/ produced 66 passing tests with no failures.
+Merged to main at a14ef34. Running python -m pytest -q from project/ produced 95 passing tests with no failures.
 
 Tracked and untracked file inspection / cleanliness:
 git ls-files and git status --short were checked before creating the release ZIP. Tracked and untracked files were reviewed before submission.
@@ -168,7 +168,7 @@ Secrets/staff material/caches/tool-metadata exclusion check:
 No passwords, credentials, real patient information, staff materials, caches, environments or Stage 8 utility files were present in the tracked release files.
 
 Candidate recovery plan / known-good SHA:
-The candidate can be recovered using the reviewed release commit 56b92a1. Any future correction would use a reviewed revert or corrective commit rather than deleting history.
+The candidate can be recovered using the reviewed release commit a14ef34. Any future correction would use a reviewed revert or corrective commit rather than deleting history.
 
 Named substantive contributions:
 Individual implementation, testing, review, documentation and integration contributions are recorded in the Stage 6–9 records and summarised in section N.
@@ -178,20 +178,20 @@ Individual implementation, testing, review, documentation and integration contri
 
 Decision — READY FOR COURSE RELEASE / READY WITH DOCUMENTED LIMITATIONS / NOT YET READY: READY WITH DOCUMENTED LIMITATIONS
 
-Approver / date / rationale and evidence: Approved by jesshall902 on 9/11/26. The regression suite passed on 56b92a1, demonstration requirements were completed, README instructions were verified and known limitations were documented.
+Approver / date / rationale and evidence: Approved by jesshall902 on 9/11/26. The regression suite passed on a14ef34, demonstration requirements were completed, README instructions were verified and known limitations were documented.
 
 What risks remain / conditions / owners: Data is session-only and is not saved when the program exits. SmartCare does not implement authentication, notifications, billing or persistent storage. These limitations are documented in section G. Responsibility for future improvements remains with the development team.
 
 Can the team explain the system: Yes. Team members prepared the explanation topics in section N and can explain requirements, architecture, testing, debugging and release decisions.
 
-Can a change be recovered: Yes. The release candidate can be recovered from 56b92a1 using Git history and reviewed commits.
+Can a change be recovered: Yes. The release candidate can be recovered from a14ef34 using Git history and reviewed commits.
 
 Common decision / PG decision where different: Common UG decision only. PG-specific requirements are not applicable.
 
 
 ## K Final tested release SHA
 
-Exact common tested SHA: 56b92a1
+Exact common tested SHA: a14ef34
 Exact PG tested SHA or not applicable: Not applicable.
 Final submitted SHA / repository URL: https://github.com/AdharvKaimal/st1-assignment-3
 Evidence-only later commit and difference explanation: Any later commit contains documentation or evidence-only updates. No executable source changes were made after the final verified test run.
