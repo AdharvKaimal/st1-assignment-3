@@ -303,34 +303,54 @@ Record actual work in test design, implementation, review, traceability, diagnos
 ## N Formative Questions
 
 1. What question does verification answer?
-Verifications ask whether the implementations meet the specificed requirements.
+RESPONSE: In a project, verification ensures that the implementation meets the requirements of the program.
+While passing a normal unit test or series of tests
+only check for functionality in a specific scenario
+verification works to further ensure quality control.
 
 2. What question does validation answer?
-Validation asks whether the product meets the intended user need (makes sure it is in scope).
+RESPONSE: Validation considers whether a product or program meets the intended need. This concept works
+closely with verification, however it focuses on the specific need rather than the requirements.
 
 3. What is a unit test?
-A unit test checks the behaviour of one small part of code on its own (such as an appointment changing from SCHEDULED to CANCELLED).
+RESPONSE: A unit test within testing modules of a program verifies the correctness of individual components and
+small sections with a program. These tests are usually automated and test for functionality among functions,
+and other specific logic within a program to ensure the expected outcome is met by the functionality.
 
 4. What is a pytest fixture?
-A pytest fixture is a reusable setup function that provides new test data or objects for tests.
+RESPONSE: Pytest fixtures are decorated with '@pytest.fixture' and they provide a fixed baseline for tests
+to run on within a programming environment. Specificially these tests handle dependncy injection, by naming the
+fixture as an argument to capture and inject value its return value into unit tests.
 
 5. What is parametrisation in pytest?
-Parametrisation allows the same test to run multiple times using different inputs.
+RESPONSE: Parameterization, in the pytest module, is a programming technique that allows a single test function 
+to be able to execute multiple times with varying inputs eliminating the need for additional duplicated code.
 
 6. What is regression testing?
-Regression testing is re-running all prior tests after a change to ensure that things that previously worked haven't broken.
+RESPONSE: regression testing is an important concept in software testing that is used to verify that recent code
+changes have not negatively impacted the functionality of the program. This technique involves running passed test
+cases to ensure that the expected result still occurs, and has not introduced additional regressions in functionality.
 
 7. What does code coverage tell us, and what does it not prove?
-Coverage tells us which lines of code ran during the tests. It doesn't prove that the behaviour is correct, or that the assertions are meaningful.
+RESPONSE: Code coverage is a metric that measures the percentage of the source dode that has been executed by the test suite.
+This technique helps programmers to find untested code, dead code, or blind spots within the code base. This allows
+developers to understand through a measurable value what portion of the code base has been exercised during testing.
 
 8. What makes an assertion weak?
-An assertion is weak if it is able to pass even if the behaviour is wrong. 
+RESPONSE: Weak assertions in programming are checks or tests that may be too broad or vague, which provides a 
+greater opportunity for functionality to not properly be tested. The assertion check may pass even when the code
+is incorrect. This usually occurs when the assertion is not specific, use expected values derived from the code
+base itself or where there is insuffiient coverage of the entire functionality of the program.
 
 9. What is the appropriate role of GitHub Copilot as a test assistant?
-Copilot can help generate test ideas and suggest edge cases, but its suggestions must be reviewed against the requirements and verified by developers before being accepted.
+RESPONSE: GitHub Copilot and other LLMs should serve to enhance the expertise of the programmer rather than 
+replacing the expertise and final judgement. Final human checking and tests are critical in ensuring that the
+assertions are valid, acceptance crtieria is met and complex business logic makes sense and is functional.
 
 10. What is the Stage 7 engineering rule?
-The Stage 7 engineering rule is to focus on what required behaviour each test actually proves. A passing test only provides evidence for the specific behaviour it checks.
+RESPONSE: Stage 07 focuses on the importance of testing, verification and validation with regard to principles
+within the engineering and programming solutions. Particularly involving the integrity of these tests and their
+value in ensuring the quality and requirements are met for a program.
 
 ## O Stage Completion
 
