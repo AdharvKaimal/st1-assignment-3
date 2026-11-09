@@ -88,7 +88,7 @@ class SmartCareDataStore:
 
     def find_appointment(self, appointment_id: str) -> Appointment | None:
         """Find an appointment, including cancelled appointments."""
-        appointment_id = required_text(appointment_id, 'Appointment ID')
+        appointment_id = required_text(appointment_id, "Appointment ID")
         return self._appointments.get(appointment_id)
 
     def list_appointments(self) -> list[Appointment]:
@@ -102,9 +102,11 @@ class SmartCareDataStore:
         exclude_appointment_id: str | None = None,
     ) -> bool:
         for appointment in self.list_appointments():
-            if (appointment.appointment_id != exclude_appointment_id
-                    and appointment.practitioner.practitioner_id != practitioner_id
-                    and appointment.date_time == date_time
-                    and appointment.status.value == "scheduled"):
+            if (
+                appointment.appointment_id != exclude_appointment_id
+                and appointment.practitioner.practitioner_id == practitioner_id
+                and appointment.date_time == date_time
+                and appointment.status.value == "scheduled"
+            ):
                 return True
         return False
