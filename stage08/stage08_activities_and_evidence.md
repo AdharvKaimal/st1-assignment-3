@@ -448,70 +448,83 @@ Not applicable. All 3 failures before the repairs were caused by F8-01 and F8-02
 
 ## H. Refactoring decision and before/after verification
 
-Smell and exact location: [complete]
-Small proposed structural change / why justified: [complete before editing]
-External behaviour to preserve / relevant tests: [complete]
-Before result: see G, full passing suite.
-Actual change / diff / separate refactor SHA: [complete]
-Focused and full after-refactor commands / working directory / results / evidence: [complete]
-Result — accepted, revised or rejected / reason / behaviour-preservation conclusion: [complete]
+Smell and exact location: Magic status string. smartcare/data_store.py, has_practitioner_conflict(), compares status.value == "scheduled" instead of using the existing enum.
+
+Small proposed structural change / why justified: Replace it with appointment.status is AppointmentStatus.SCHEDULED. This removes a hard-coded string that could be mistyped and uses the existing enum (see A.4).
+
+External behaviour to preserve / relevant tests: Same-practitioner/time SCHEDULED bookings are rejected; different practitioners and cancelled slots are still allowed. Tests: test_conflict_rule_and_different_practitioner and the full suite.
+
+Before result: see G, full passing suite at 3ff948717168705590a8d19ff0f01e36c2c6c2ab (57 passed).
+
+Actual change / diff / separate refactor SHA: One line in has_practitioner_conflict() changed from status.value == "scheduled" to status is AppointmentStatus.SCHEDULED. SHA: a041f659acaa454bf74a19fa73867244816fab08
+
+Focused and full after-refactor commands / working directory / results / evidence: py -m pytest tests/test_starter.py::test_conflict_rule_and_different_practitioner -v; project/; [result]. py -m pytest; project/; [result]. Evidence: saved terminal output.
+
+Result — accepted, revised or rejected / reason / behaviour-preservation conclusion: Accepted. The same tests passed before and after, so behaviour is unchanged.
 
 ## I. Git, human review and integration
 
-Issues for both defects / refactor scope and owners: [complete]
-Branch / prepared, repair and refactor checkpoints: [link B/C/D/H]
-PR link and another member's reviewer identity: [complete]
-Key human feedback, difference from Copilot findings and response/outcome: [complete]
-Actual review approval / merge evidence: [complete]
-Integrated code SHA and team pull/retest command / working directory / result: [complete]
-Evidence-only later SHA / explanation if different: [complete or not applicable]
-Each member's substantive contribution and artefact: [complete]
+Issues for both defects / refactor scope and owners: [issue links and owners]
+Branch / prepared, repair and refactor checkpoints: Branch debug/stage08. Prepared 4dc37802259ccb7544915c8a435fffa39fc08126 (B); F8-01 repair 64d1bf9fdc69dc5307e3f0c5cc7ca50599989f50 (C); F8-02 repair 3ff948717168705590a8d19ff0f01e36c2c6c2ab (D); refactor a041f659acaa454bf74a19fa73867244816fab08 (H).
+PR link and another member's reviewer identity: [PR link]; reviewed by [name]
+Key human feedback, difference from Copilot findings and response/outcome: [ ]
+Actual review approval / merge evidence: [ ]
+Integrated code SHA and team pull/retest command / working directory / result: [MERGE SHA]; git pull then py -m pytest; project/; [result]
+Evidence-only later SHA / explanation if different: [ or not applicable ]
+Each member's substantive contribution and artefact: [ ]
 
 ## J. Required reflections
 
-1. Which Copilot diagnosis appeared convincing but lacked evidence? [complete; report honestly if none and discuss the least-supported real suggestion]
-2. What evidence changed your group's view? [complete]
-3. How did regression tests protect the refactoring? [complete]
+1. Which Copilot diagnosis appeared convincing but lacked evidence?
+Copilot's F8-02 suggestion that booking might not call the conflict check seemed reasonable. Inspecting book_appointment() showed it does call and enforce it, so we rejected it.
+
+2. What evidence changed your group's view?
+Inspecting the code. For F8-01, the cancelled record was still in list_appointments(), so it was not deleted; the lookup filter was hiding it. For F8-02, the times matched, which pointed to the != comparison.
+
+3. How did regression tests protect the refactoring?
+We ran the full suite before and after the refactor. Both passed, showing booking, conflict and cancellation behaviour stayed the same.
 
 ## K. Ten formative questions
 
 1. What should an engineer do before changing code in response to a failure?
 
-Response: [complete]
+Response: Reproduce the failure, check the expected behaviour from the requirements, and find the cause before changing code.
 
 2. Where should expected behaviour come from during debugging?
 
-Response: [complete]
+Response: From the requirements and acceptance criteria, not from the current code or a test alone.
 
 3. What is a debugging hypothesis?
 
-Response: [complete]
+Response: A possible explanation for a failure that is tested with evidence before it is accepted.
 
 4. What is a regression test and why is it retained?
 
-Response: [complete]
+Response: A test that checks a fixed bug stays fixed. It is kept so the bug cannot return unnoticed.
 
 5. What is meant by root cause?
 
-Response: [complete]
+Response: The underlying reason a failure happens, not just where the error appears.
 
 6. What is refactoring?
 
-Response: [complete]
+Response: Changing code structure to make it clearer without changing its behaviour.
 
 7. What is a swallowed exception?
 
-Response: [complete]
+Response: An exception that is caught and ignored, hiding the error.
 
 8. What is a code smell?
 
-Response: [complete]
+Response: A sign the code may be hard to read or change, such as long methods or repeated code.
 
 9. How should GitHub Copilot-generated debugging diagnoses be treated?
 
-Response: [complete]
+Response: As hypotheses that must be checked against code and test evidence before being accepted.
 
 10. What is the Stage 8 engineering rule?
+
+Response: Reproduce and understand the failure with evidence before changing code, then verify with tests.
 
 Response: [complete]
 
