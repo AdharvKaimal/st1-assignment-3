@@ -172,3 +172,110 @@ def test_cancel_invalid_id() -> None:
     for invalid_id in ['', ' ', None, 1]:
         with pytest.raises(ValueError):
             appointment_service.cancel_appointment(invalid_id)
+
+# ------------------------------------
+#       Stage 7 extended tests
+# ------------------------------------
+
+# ----- Registration (FR-01) -----
+
+def test_register_patient_stores_valid_data() -> None:
+    """Valid registration: an unused patient ID is stored and can be found again"""
+    data_store, _, _, _ = foundation()
+    registered = PatientService(data_store).register_patient('P2', 'Sam Example')
+    assert data_store.find_patient('P2') is registered
+    assert registered.name == 'Sam Example'
+
+def test_duplicate_patient_id_with_spaces_is_rejected() -> None:
+    """Trimmed duplicate ID: ' P1 ' counts as P1, raises ValueError and keeps the original"""
+    data_store, patient, _, _ = foundation()
+    with pytest.raises(ValueError):
+        PatientService(data_store).register_patient(' P1 ', 'Replacement')
+    assert data_store.find_patient('P1') is patient
+    assert patient.name == 'Alex Example'
+    assert data_store.list_patients() == [patient]
+
+def test_patient_registration_is_case_sensitive() -> None:
+    """Case-sensitive IDs: p1 is a different patient from P1, so both are stored"""
+    data_store, patient, _, _ = foundation()
+    lowercase = PatientService(data_store).register_patient('p1', 'Lowercase Example')
+    assert lowercase is not patient
+    assert data_store.find_patient('p1') is lowercase
+    assert data_store.find_patient('P1') is patient
+
+def test_same_id_allowed_for_patient_and_practitioner() -> None:
+    """Unique per entity type: a practitioner can use an ID a patient already has"""
+    data_store, patient, _, _ = foundation()
+    practitioner = PractitionerService(data_store).register_practitioner(
+        'P1',
+        'Morgan Example',
+        'General',
+    )
+    assert data_store.find_practitioner('P1') is practitioner
+    assert data_store.find_patient('P1') is patient
+
+# ----- Booking and conflicts (FR-04, FR-05) -----
+
+def test_book_appointment_trims_participant_ids() -> None:
+    """Booking and lookup: spaces around IDs still find the registered objects"""
+    _, patient, practitioner, appointment_service = foundation()
+    appointment = appointment_service.book_appointment(
+        'A1',
+        ' P1 ',
+        ' D1 ',
+        datetime(2026, 10, 1, 9),
+    )
+    assert appointment.patient is patient
+    assert appointment.practitioner is practitioner
+    assert appointment.status is AppointmentStatus.SCHEDULED
+    assert appointment_service.find_appointment(' A1 ') is appointment
+
+def test_book_unknown_practitioner_rejected() -> None:
+    """Unknown practitioner: raises LookupError and nothing is stored"""
+    data_store, _, _, appointment_service = foundation()
+    with pytest.raises(LookupError):
+        appointment_service.book_appointment(
+            'A1',
+            'P1',
+            'D9',
+            datetime(2026, 10, 1, 9),
+        )
+    assert data_store.list_appointments() == []
+
+def test_conflict_rejected_and_store_unchanged() -> None:
+    """Practitioner conflict: same practitioner and time raises ValueError, store unchanged"""
+    data_store, _, _, appointment_service = foundation()
+    when = datetime(2026, 10, 1, 9)
+    original = appointment_service.book_appointment('A1', 'P1', 'D1', when)
+    with pytest.raises(ValueError):
+        appointment_service.book_appointment('A2', 'P1', 'D1', when)
+    assert data_store.list_appointments() == [original]
+
+def test_booking_one_minute_later_is_allowed() -> None:
+    """Conflict boundary: same practitioner one minute later is not a conflict"""
+    data_store, _, _, appointment_service = foundation()
+    first = appointment_service.book_appointment(
+        'A1',
+        'P1',
+        'D1',
+        datetime(2026, 10, 1, 9),
+    )
+    second = appointment_service.book_appointment(
+        'A2',
+        'P1',
+        'D1',
+        datetime(2026, 10, 1, 9, 1),
+    )
+    assert second.status is AppointmentStatus.SCHEDULED
+    assert data_store.list_appointments() == [first, second]
+
+def test_cancelled_booking_frees_slot() -> None:
+    """Cancelled slot: a cancelled booking no longer blocks the same practitioner and time"""
+    data_store, _, _, appointment_service = foundation()
+    when = datetime(2026, 10, 1, 9)
+    first = appointment_service.book_appointment('A1', 'P1', 'D1', when)
+    appointment_service.cancel_appointment('A1')
+    second = appointment_service.book_appointment('A2', 'P1', 'D1', when)
+    assert first.status is AppointmentStatus.CANCELLED
+    assert second.status is AppointmentStatus.SCHEDULED
+    assert data_store.list_appointments() == [first, second]
