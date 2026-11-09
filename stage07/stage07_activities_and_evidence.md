@@ -156,7 +156,21 @@ Use fresh shared SmartCareDataStore state, registered objects and completed Stag
 
 | Test ID | Behaviour | Requirement / criterion | Test file/function | Result |
 |---|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] | [complete] |
+| TC-FR01-01 | Valid registration is stored | FR-01 / AC-01.1 | test_services.py::test_register_patient_stores_valid_data | Passed |
+| TC-FR01-02 | Trimmed duplicate patient ID rejected | FR-01 / AC-01.2 | test_services.py::test_duplicate_patient_id_with_spaces_is_rejected | Passed |
+| TC-FR01-04 | Case-sensitive IDs, same ID allowed across patient and practitioner | FR-01 / revision 2 contract | test_services.py::test_patient_registration_is_case_sensitive; ::test_same_id_allowed_for_patient_and_practitioner | Passed |
+| TC-FR02-01 | Known and unknown patient lookup | FR-02 / AC-02.1, AC-02.2 | test_services.py::test_find_patient_returns_stored_object; ::test_find_patient_unknown_id | Passed |
+| TC-FR02-02 | Lookup IDs are trimmed, case-sensitive, and blank/non-string are rejected | FR-02 / revision 2 contract | test_services.py::test_find_patient_trims_ids; ::test_find_patient_is_case_sensitive; ::test_find_patient_invalid_id | Passed |
+| TC-FR03-01 | Registered practitioner is found | FR-03 (lookup is a supporting operation) | test_services.py::test_find_practitioner_returns_stored_object | Passed |
+| TC-FR04-01 | Booking and appointment lookup with trimmed IDs | FR-04 / AC-03.1; FR-08 / AC-06.1 | test_services.py::test_book_appointment_trims_participant_ids | Passed |
+| TC-FR04-02 | Unknown practitioner rejected, nothing stored | FR-04 / AC-03.2 | test_services.py::test_book_unknown_practitioner_rejected | Passed |
+| TC-FR05-01 | Practitioner conflict rejected, store unchanged | FR-05 / AC-04.1 | test_services.py::test_conflict_rejected_and_store_unchanged | Passed |
+| TC-FR05-02 | Same practitioner one minute later is allowed | FR-05 / AC-04.2 | test_services.py::test_booking_one_minute_later_is_allowed | Passed |
+| TC-FR05-03 | Cancelled booking frees the slot | FR-05 / revision 2 contract | test_services.py::test_cancelled_booking_frees_slot | Passed |
+| TC-FR06-01 | Cancel returns the same object as CANCELLED | FR-06 / AC-05.1 | test_services.py::test_cancel_same_object_return_cancelled | Passed |
+| TC-FR06-02 / 03 | Repeated and COMPLETED cancellation rejected, state unchanged | FR-06 / AC-05.3 | test_services.py::test_cancelled_twice_keeps_state; ::test_cancel_from_completed_keeps_state | Passed |
+| TC-FR06-04 | Unknown appointment ID gives LookupError; blank/non-string gives ValueError | FR-06 / revision 2 contract | test_services.py::test_cancel_unknown_id; ::test_cancel_invalid_id | Passed |
+| TC-FR07-01 | Cancelled appointment is retained and retrievable | FR-07 / AC-05.2 | test_services.py::test_cancelled_appointment_is_stored | Passed |
 
 ## G Negative and Boundary Cases
 
@@ -164,7 +178,19 @@ Connect cases to actual contracts and verify unchanged state after rejection.
 
 | Behaviour | Boundary/invalid input | Expected result | Test ID |
 |---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] |
+| Patient registration | Duplicate ID with spaces (' P1 ') | ValueError; original patient unchanged | TC-FR01-02 |
+| Patient registration | p1 when P1 already exists | Allowed - two different patients | TC-FR01-04 |
+| Practitioner registration | Same ID as an existing patient | Allowed (unique per entity type) | TC-FR01-04 |
+| Patient lookup | Blank, space-only, None or 1 | ValueError | TC-FR02-02 |
+| Patient lookup | ' P1 ' (spaces) / p1 (wrong case) | ' P1 ' finds P1, p1 raises LookupError | TC-FR02-02 |
+| Patient lookup | Valid but unregistered ID | LookupError | TC-FR02-01 |
+| Booking | Unknown practitioner | LookupError - list_appointments() empty | TC-FR04-02 |
+| Booking | Same practitioner, exact same time as a SCHEDULED appointment | ValueError - store holds only the original | TC-FR05-01 |
+| Booking | Same practitioner, one minute later | Allowed | TC-FR05-02 |
+| Booking | Same practitioner and time after the first booking was cancelled | Allowed - first stays CANCELLED | TC-FR05-03 |
+| Cancellation | Already CANCELLED | ValueError - status stays CANCELLED | TC-FR06-02 |
+| Cancellation | COMPLETED | ValueError - status stays COMPLETED | TC-FR06-03 |
+| Cancellation | Unknown ID / blank ID | LookupError / ValueError | TC-FR06-04 |
 
 ## H GitHub Copilot Test Design
 
