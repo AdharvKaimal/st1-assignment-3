@@ -1,7 +1,7 @@
 # Stage 7 Testing and Verification Record
 
 Group/tutorial: Tuesday Group 4 (13:30-15:30)  
-Members/cohorts: (GitHub) AdharvKaimal, kristianreyes13, jesshall902
+Members/cohorts: (GitHub) AdharvKaimal, krestianreyes13, jesshall902
 Requirements baseline: SmartCare A3 Requirements Baseline 2026, revision 2.
 Use the same project/. Link actual evidence; keep responses concise. Blank fields are for your group. Copy rows only as needed.
 
@@ -70,7 +70,7 @@ GitHub Copilot generates five tests, all of which pass. Two only assert that obj
 ### Tutorial exit question
 
 Why can 100% code coverage coexist with poor software verification?
-[response]
+Coverage only shows which lines ran, not whether the tests check the right thing. A test that calls cancel_appointment but only asserts True would give full coverage and still prove nothing about the status, the returned object or rejected input.
 
 ## B Requirement to Test Traceability Matrix
 
@@ -244,13 +244,16 @@ Before accepting: traces to a requirement/criterion; can fail for the right reas
 
 ## I Weak Copilot Test Reflection
 
-Which Copilot-generated test looked convincing but was weak?: 
+**Which Copilot-generated test looked convincing but was weak?:** 
+Candidate 3 (rejecting overlapping appointment durations). It sounded like a sensible conflict test, but SmartCare only conflicts on the same practitioner at the exact same date and time (out of scope).
 
-Why was it weak?: 
+**Why was it weak?:**
+It tested a rule that wasn't outlined in the requirements.
 
-How did you strengthen it? [response]
+**How did you strengthen it?:**
+I rejected it and kept the tests in scope. 
 
-Accepted / modified / rejected test decisions and evidence: [link actual decisions in H]
+**Accepted / modified / rejected test decisions and evidence:** Accepted: Candidate 1 (conflict rejection) and Candidate 2 (valid booking 1 minute later). Rejected: Candidate 3 (appointment duration overlap check).
 
 ## J Regression Run
 
@@ -258,19 +261,26 @@ Run python -m pytest from project/. Retain all accumulated tests. Record the tes
 
 | Command | Working directory | Code SHA | Passed | Failed | Failure summary | Product defect / test defect / unresolved | Evidence and interpretation |
 |---|---|---|---|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] | [complete] | [complete] | [complete] | [complete] |
+| python -m pytest | project/ | 8b49c66 | 56 | 0 | | | All tests pass together. Stage 7 extended services tests were not included in this run. |
+| python -m pytest | project/ | ad4ffea | 65 | 0 | | | All tests passed together, included extended service tests. |
 
-Individual test runs and changed-order independence evidence: [commands, results, links]
-Optional tutor-led demonstration notes: [optional; leave blank if not used]
+Individual test runs and changed-order independence evidence: 
+- `python -m pytest tests/test_services.py::test_cancelled_booking_frees_slot` → 1 passed in 0.12s
+- `python -m pytest tests/test_domain.py::TestPatient::test_rejects_blank_id` → 1 passed in 0.10s
+Optional tutor-led demonstration notes: N/A
 A meaningful test should detect a relevant incorrect result. Students do not have to perform the demonstration or submit failure/restoration evidence for assessment. The tutor restores the example and reruns its tests. This is not a Stage 8 fault activity.
-Requirement → test → failure/observation → diagnosis → change → verification: [concise links where applicable]
+Requirement → test → failure/observation → diagnosis → change → verification: No failures to diagnose. The first run collected 56 tests, which showed the extended service tests still had to be added, and after adding them the suite passed with 65.
 
 ## K What the Suite Still Does Not Prove
 
-What does your test suite still not prove? [response]
-Coverage if used: [result or not used]
-Which uncovered areas matter, and why does coverage percentage alone not establish correctness? [response]
-Optional fixtures/parametrisation used and why, if any: [response or not used]
+What does your test suite still not prove?:
+- It only covers the cases we wrote, using fixed synthetic data. Other IDs or times could behave differently.
+- The domain tests for rejected cancellations check the exception but not that the status is unchanged afterwards.
+- Failed lookups aren't shown to leave the stores unchanged.
+- It doesn't cover the console, queries or menu, which belong to later stages.
+Coverage if used: Not used
+Which uncovered areas matter, and why does coverage percentage alone not establish correctness?: Coverage only shows which lines ran, not whether the assertions check the right behaviour, so we didn't use it.
+Optional fixtures/parametrisation used and why, if any: Not used.
 
 ## L Git and Review Evidence
 
@@ -278,7 +288,8 @@ Use links rather than copying GitHub history. Continue the Stage 6 workflow; no 
 
 | Issue/task | Branch | PR | Reviewer | Key feedback | Outcome |
 |---|---|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] | [complete] | [complete] |
+| Domain Tests | documentation/s6_Adharv | https://github.com/AdharvKaimal/st1-assignment-3/pull/9 | jesshall902 | N/A | 29/10/26 |
+| Stage 7 extended service tests | docs/stage6_stage7 | https://github.com/AdharvKaimal/st1-assignment-3/pull/14 | krestianreyes13 | N/A | 9/11/26 |
 
 ## M Contribution Evidence
 
@@ -286,7 +297,8 @@ Record actual work in test design, implementation, review, traceability, diagnos
 
 | Member | Actual contribution | Evidence link |
 |---|---|---|
-| jesshall902 | Drafted test_domain.py | https://github.com/AdharvKaimal/st1-assignment-3/compare/main...feature/stage7-domain-tests |
+| jesshall902 | Drafted an initial test_domain.py on feature/stage7-domain-tests - an extended version was later merged via PR #9. Added the Stage 7 extended service tests (9) to test_services.py and helped complete sections F to O for Stage 7's documentation | https://github.com/AdharvKaimal/st1-assignment-3/compare/main...feature/stage7-domain-tests, https://github.com/AdharvKaimal/st1-assignment-3/pull/14 |
+| krestianreyes13 | Helped draft, review, and provide feedback on documentation sections (particular F-O), and reviewed the extended test_services.py tests | https://github.com/AdharvKaimal/st1-assignment-3/pull/14 |
 
 ## N Formative Questions
 
@@ -322,9 +334,9 @@ The Stage 7 engineering rule is to focus on what required behaviour each test ac
 
 ## O Stage Completion
 
-Tested Stage 7 main SHA: [complete]
-Full-suite result: [complete]
-Unresolved defects and effect on baseline: [complete or none]
-Clean working tree and integration evidence: [complete]
-Stage 8 handover status: [complete; no Stage 8 work assigned]
-All tutorial/formative responses and traceability/Copilot decisions complete: [confirm]
+Tested Stage 7 main SHA: [complete] 
+Full-suite result: python -m pytest, project/, 65 passed, 0 failed
+Unresolved defects and effect on baseline: None.
+Clean working tree and integration evidence: git status clean on main after pulling.
+Stage 8 handover status: Ready for tutor checkpoint.
+All tutorial/formative responses and traceability/Copilot decisions complete: F to K and N are completed, just awaiting update results for B-E, and member contributions.
