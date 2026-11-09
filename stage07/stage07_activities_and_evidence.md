@@ -244,9 +244,12 @@ Before accepting: traces to a requirement/criterion; can fail for the right reas
 
 ## I Weak Copilot Test Reflection
 
-Which Copilot-generated test looked convincing but was weak? [response]
-Why was it weak? [response]
+Which Copilot-generated test looked convincing but was weak?: 
+
+Why was it weak?: 
+
 How did you strengthen it? [response]
+
 Accepted / modified / rejected test decisions and evidence: [link actual decisions in H]
 
 ## J Regression Run
@@ -288,34 +291,34 @@ Record actual work in test design, implementation, review, traceability, diagnos
 ## N Formative Questions
 
 1. What question does verification answer?
-[response]
+Verifications ask whether the implementations meet the specificed requirements.
 
 2. What question does validation answer?
-[response]
+Validation asks whether the product meets the intended user need (makes sure it is in scope).
 
 3. What is a unit test?
-[response]
+A unit test checks the behaviour of one small part of code on its own (such as an appointment changing from SCHEDULED to CANCELLED).
 
 4. What is a pytest fixture?
-[response]
+A pytest fixture is a reusable setup function that provides new test data or objects for tests.
 
 5. What is parametrisation in pytest?
-[response]
+Parametrisation allows the same test to run multiple times using different inputs.
 
 6. What is regression testing?
-[response]
+Regression testing is re-running all prior tests after a change to ensure that things that previously worked haven't broken.
 
 7. What does code coverage tell us, and what does it not prove?
-[response]
+Coverage tells us which lines of code ran during the tests. It doesn't prove that the behaviour is correct, or that the assertions are meaningful.
 
 8. What makes an assertion weak?
-[response]
+An assertion is weak if it is able to pass even if the behaviour is wrong. 
 
 9. What is the appropriate role of GitHub Copilot as a test assistant?
-[response]
+Copilot can help generate test ideas and suggest edge cases, but its suggestions must be reviewed against the requirements and verified by developers before being accepted.
 
 10. What is the Stage 7 engineering rule?
-[response]
+The Stage 7 engineering rule is to focus on what required behaviour each test actually proves. A passing test only provides evidence for the specific behaviour it checks.
 
 ## O Stage Completion
 
