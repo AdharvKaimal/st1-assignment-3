@@ -153,7 +153,7 @@ Another possibility is that lookup hides cancelled records. If the record
 remains in the list, deletion is unlikely.
 
 Member and saved sequence/time or commit:
-[Actual member and evidence recorded before consultation.]
+SHA 860390bb0c0735894f013e143ccbed8f9ee7d6b0 Memebr KRestianreyes13
 
 
 ### F8-02 human entry
@@ -168,7 +168,7 @@ practitioner comparison. If the times match, inspect the practitioner IDs
 and comparison operator.
 
 Member and saved sequence/time or commit:
-[Actual member and evidence recorded before consultation.]
+SHA 860390bb0c0735894f013e143ccbed8f9ee7d6b0 Memebr KRestianreyes13
 
 ## F. GitHub Copilot prompts, findings and human decisions
 
