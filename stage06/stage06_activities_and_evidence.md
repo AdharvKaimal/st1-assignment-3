@@ -180,6 +180,15 @@ Repeat per member. Include only categories that describe actual work; write not 
 - Debugging or integration: Confirmed 24 test pass on the update main. 
 - Documentation or team support: Completed sections G, H, and I.
 
+- Member: kristianreyes13
+- Implementation: Contributed patient lookup, practitioner lookup and cancellation logic on Code-for-Patient,Prac,Cancel.
+- Testing: Contributed service test for lookup and cancellation (commit 2673fcb).
+- Review: N/A
+- Issue refinement: Drafted patient-search and cancellation acceptance criteria in Section A.
+- Design and responsibility discussion: N/A
+- Debugging or integration: Confirmed local main was updated after merging.
+- Documentation or team support: Completed Sections A-C and contributed to Section G on Activities/Complettion/Stages6/7.
+
 ## K Exit question
 
 Why is a high commit count not necessarily evidence of strong contribution?
@@ -238,7 +247,7 @@ RESPONSE: The principle of collaborative work, communication and creating a char
 - PR and another-member reviewer: PR #6 (https://github.com/AdharvKaimal/st1-assignment-3/pull/6), reviewed by jesshall902. PR #7 (https://github.com/AdharvKaimal/st1-assignment-3/pull/7), reviewed by kristianreyes13.
 - Unresolved issue or none: None.
 - Stage 7 handover status: Ready for tutor checkpoint.
-- Final submitted SHA if later than tested SHA: e27d0d797f75f945c653cff19718261c8732dd16 *please update after final commit*
+- Final submitted SHA if later than tested SHA: 63c8bcf1ae58e282dc3f0ae1debcf0d069eb5334
 
 - [ ] Three Stage 6 service targets completed and checked.
 - [ ] Original supplied tests retained and passing.
