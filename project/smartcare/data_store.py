@@ -87,12 +87,9 @@ class SmartCareDataStore:
         self._appointments[appointment.appointment_id] = appointment
 
     def find_appointment(self, appointment_id: str) -> Appointment | None:
-        """Return the stored appointment or None; reject blank IDs with
-        ValueError.
-        """
-        return self._appointments.get(
-            required_text(appointment_id, 'Appointment ID'),
-        )
+        """Find an appointment, including cancelled appointments."""
+        appointment_id = required_text(appointment_id, "Appointment ID")
+        return self._appointments.get(appointment_id)
 
     def list_appointments(self) -> list[Appointment]:
         """Return a new list containing all stored appointment objects."""
@@ -104,12 +101,6 @@ class SmartCareDataStore:
         date_time: datetime,
         exclude_appointment_id: str | None = None,
     ) -> bool:
-        """Check for another SCHEDULED appointment at this
-        practitioner/time.
-
-        The optional excluded appointment ID is ignored. Do not mutate
-        records.
-        """
         for appointment in self.list_appointments():
             if (
                 appointment.appointment_id != exclude_appointment_id

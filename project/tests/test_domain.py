@@ -208,3 +208,18 @@ class TestAppointment:
         assert appt.patient is self.patient
         assert appt.practitioner is self.practitioner
         assert appt.date_time == self.datetime
+
+    def test_cancellation_preserves_appointment_details(self) -> None:
+        patient = Patient("P1", "Alex Example")
+        practitioner = Practitioner("D1", "Taylor Example", "General")
+        when = datetime(2026, 10, 1, 9)
+
+        appointment = Appointment("A1", patient, practitioner, when)
+
+        appointment.cancel()
+
+        assert appointment.status is AppointmentStatus.CANCELLED
+        assert appointment.appointment_id == "A1"
+        assert appointment.patient is patient
+        assert appointment.practitioner is practitioner
+        assert appointment.date_time == when
