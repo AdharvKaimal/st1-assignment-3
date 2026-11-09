@@ -196,30 +196,60 @@ Connect cases to actual contracts and verify unchanged state after rejection.
 
 Select ONE real acceptance criterion. Complete human-first fields before using Copilot. Do not require an accepted generated test.
 
-Requirement: [complete]
-Acceptance criterion: [quote]
-Behaviour to test: [complete]
-Human-first test idea/categories: [complete]
-Prompt and purpose: [complete or link]
+Requirement: FR-05 Prevent practitioner conflict
+Acceptance criterion: AC-04.1 and AC-04.2: Same practitioner, exact time and an existing SCHEDULED appointment conflicts; another practitioner at the same time is allowed.
+Behaviour to test: New booking is rejected when the same practitioner already has a SCHEDULED appointment for the same date and time. Different practitioners at the same time are allowed.
+Human-first test idea/categories:
+- Same practitoner, same time → Rejected.
+- Different practitioner, same time → Accepted.
+- Same practitioner, one minute later → Accepted.
+- Same practitioner and same time, but after cancellation → Accepted.
+Prompt and purpose: Used the Stage 7 Copilot prompt to generate candidate tests for FR-05.
 
 For each significant candidate, copy this entry as needed:
-- Copilot test idea/candidate: [complete]
-- What it claims to verify: [complete]
-- Requirement trace: [complete]
-- Assertion quality: [complete]
-- Human critique: [complete]
-- Decision: [Accept / Modify / Reject]
-- Reason: [complete]
-- Final test reference if accepted/modified: [link or not retained]
-- Actual verification result: [complete; do not claim an unrun test passed]
+**Candidate 1**
+- Copilot test idea/candidate: Attempt to create two appointments with the same practitioner and exact same time.
+- What it claims to verify: Practitioner conflict checking.
+- Requirement trace: FR-05 / AC-04.1
+- Assertion quality: Strong.
+- Human critique: Verifies required behaviour.
+- Decision: Accept
+- Reason: Directly checks the required conflict rule.
+- Final test reference if accepted/modified: test_services.py::test_conflict_rejected_and_store_unchanged
+- Actual verification result: Passed
+
+**Candidate 2**
+- Copilot test idea/candidate: Verify a booking succeeds if the practitioner is available one minute later.
+- What it claims to verify: Valid non-conflicting booking.
+- Requirement trace: FR-05 / AC-04.2
+- Assertion quality: Strong.
+- Human critique: Matches the SmartCare contract and checks an allowed booking scenario.
+- Decision: Accept
+- Reason: Verifies that conflict checking is not over-restrictive.
+- Final test reference if accepted/modified: test_services.py::test_booking_one_minute_later_is_allowed
+- Actual verification result: Passed
+
+**Candidate 3**
+- Copilot test idea/candidate: Verify overlapping appointment durations are rejected.
+- What it claims to verify: Practitioner conflict checking.
+- Requirement trace: None
+- Assertion quality: N/A
+- Human critique: Duration overlap is not included in SmartCare's requirements (only same date/time restrictions are needed).
+- Decision: Reject
+- Reason: Out of scope.
+- Final test reference if accepted/modified: N/A
+- Actual verification result: N/A
 
 Before accepting: traces to a requirement/criterion; can fail for the right reason; assertion checks required behaviour; no invented business rule; no unnecessary private implementation dependence. Reject/modify weak assertions, invented requirements, excessive mocking, duplicates, wrong exceptions, obsolete architecture and unnecessary dependencies.
 
 ## I Weak Copilot Test Reflection
 
-Which Copilot-generated test looked convincing but was weak? [response]
-Why was it weak? [response]
+Which Copilot-generated test looked convincing but was weak?: 
+
+Why was it weak?: 
+
 How did you strengthen it? [response]
+
 Accepted / modified / rejected test decisions and evidence: [link actual decisions in H]
 
 ## J Regression Run
@@ -256,39 +286,39 @@ Record actual work in test design, implementation, review, traceability, diagnos
 
 | Member | Actual contribution | Evidence link |
 |---|---|---|
-| [complete] | [complete] | [complete] |
+| jesshall902 | Drafted test_domain.py | https://github.com/AdharvKaimal/st1-assignment-3/compare/main...feature/stage7-domain-tests |
 
 ## N Formative Questions
 
 1. What question does verification answer?
-[response]
+Verifications ask whether the implementations meet the specificed requirements.
 
 2. What question does validation answer?
-[response]
+Validation asks whether the product meets the intended user need (makes sure it is in scope).
 
 3. What is a unit test?
-[response]
+A unit test checks the behaviour of one small part of code on its own (such as an appointment changing from SCHEDULED to CANCELLED).
 
 4. What is a pytest fixture?
-[response]
+A pytest fixture is a reusable setup function that provides new test data or objects for tests.
 
 5. What is parametrisation in pytest?
-[response]
+Parametrisation allows the same test to run multiple times using different inputs.
 
 6. What is regression testing?
-[response]
+Regression testing is re-running all prior tests after a change to ensure that things that previously worked haven't broken.
 
 7. What does code coverage tell us, and what does it not prove?
-[response]
+Coverage tells us which lines of code ran during the tests. It doesn't prove that the behaviour is correct, or that the assertions are meaningful.
 
 8. What makes an assertion weak?
-[response]
+An assertion is weak if it is able to pass even if the behaviour is wrong. 
 
 9. What is the appropriate role of GitHub Copilot as a test assistant?
-[response]
+Copilot can help generate test ideas and suggest edge cases, but its suggestions must be reviewed against the requirements and verified by developers before being accepted.
 
 10. What is the Stage 7 engineering rule?
-[response]
+The Stage 7 engineering rule is to focus on what required behaviour each test actually proves. A passing test only provides evidence for the specific behaviour it checks.
 
 ## O Stage Completion
 
