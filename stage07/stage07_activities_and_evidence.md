@@ -1,7 +1,7 @@
 # Stage 7 Testing and Verification Record
 
 Group/tutorial: Tuesday Group 4 (13:30-15:30)  
-Members/cohorts: (GitHub) AdharvKaimal, kristianreyes13, jesshall902
+Members/cohorts: (GitHub) AdharvKaimal, krestianreyes13, jesshall902
 Requirements baseline: SmartCare A3 Requirements Baseline 2026, revision 2.
 Use the same project/. Link actual evidence; keep responses concise. Blank fields are for your group. Copy rows only as needed.
 
@@ -70,7 +70,7 @@ GitHub Copilot generates five tests, all of which pass. Two only assert that obj
 ### Tutorial exit question
 
 Why can 100% code coverage coexist with poor software verification?
-[response]
+Coverage only shows which lines ran, not whether the tests check the right thing. A test that calls cancel_appointment but only asserts True would give full coverage and still prove nothing about the status, the returned object or rejected input.
 
 ## B Requirement to Test Traceability Matrix
 
@@ -156,7 +156,21 @@ Use fresh shared SmartCareDataStore state, registered objects and completed Stag
 
 | Test ID | Behaviour | Requirement / criterion | Test file/function | Result |
 |---|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] | [complete] |
+| TC-FR01-01 | Valid registration is stored | FR-01 / AC-01.1 | test_services.py::test_register_patient_stores_valid_data | Passed |
+| TC-FR01-02 | Trimmed duplicate patient ID rejected | FR-01 / AC-01.2 | test_services.py::test_duplicate_patient_id_with_spaces_is_rejected | Passed |
+| TC-FR01-04 | Case-sensitive IDs, same ID allowed across patient and practitioner | FR-01 / revision 2 contract | test_services.py::test_patient_registration_is_case_sensitive; ::test_same_id_allowed_for_patient_and_practitioner | Passed |
+| TC-FR02-01 | Known and unknown patient lookup | FR-02 / AC-02.1, AC-02.2 | test_services.py::test_find_patient_returns_stored_object; ::test_find_patient_unknown_id | Passed |
+| TC-FR02-02 | Lookup IDs are trimmed, case-sensitive, and blank/non-string are rejected | FR-02 / revision 2 contract | test_services.py::test_find_patient_trims_ids; ::test_find_patient_is_case_sensitive; ::test_find_patient_invalid_id | Passed |
+| TC-FR03-01 | Registered practitioner is found | FR-03 (lookup is a supporting operation) | test_services.py::test_find_practitioner_returns_stored_object | Passed |
+| TC-FR04-01 | Booking and appointment lookup with trimmed IDs | FR-04 / AC-03.1; FR-08 / AC-06.1 | test_services.py::test_book_appointment_trims_participant_ids | Passed |
+| TC-FR04-02 | Unknown practitioner rejected, nothing stored | FR-04 / AC-03.2 | test_services.py::test_book_unknown_practitioner_rejected | Passed |
+| TC-FR05-01 | Practitioner conflict rejected, store unchanged | FR-05 / AC-04.1 | test_services.py::test_conflict_rejected_and_store_unchanged | Passed |
+| TC-FR05-02 | Same practitioner one minute later is allowed | FR-05 / AC-04.2 | test_services.py::test_booking_one_minute_later_is_allowed | Passed |
+| TC-FR05-03 | Cancelled booking frees the slot | FR-05 / revision 2 contract | test_services.py::test_cancelled_booking_frees_slot | Passed |
+| TC-FR06-01 | Cancel returns the same object as CANCELLED | FR-06 / AC-05.1 | test_services.py::test_cancel_same_object_return_cancelled | Passed |
+| TC-FR06-02 / 03 | Repeated and COMPLETED cancellation rejected, state unchanged | FR-06 / AC-05.3 | test_services.py::test_cancelled_twice_keeps_state; ::test_cancel_from_completed_keeps_state | Passed |
+| TC-FR06-04 | Unknown appointment ID gives LookupError; blank/non-string gives ValueError | FR-06 / revision 2 contract | test_services.py::test_cancel_unknown_id; ::test_cancel_invalid_id | Passed |
+| TC-FR07-01 | Cancelled appointment is retained and retrievable | FR-07 / AC-05.2 | test_services.py::test_cancelled_appointment_is_stored | Passed |
 
 ## G Negative and Boundary Cases
 
@@ -164,37 +178,82 @@ Connect cases to actual contracts and verify unchanged state after rejection.
 
 | Behaviour | Boundary/invalid input | Expected result | Test ID |
 |---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] |
+| Patient registration | Duplicate ID with spaces (' P1 ') | ValueError; original patient unchanged | TC-FR01-02 |
+| Patient registration | p1 when P1 already exists | Allowed - two different patients | TC-FR01-04 |
+| Practitioner registration | Same ID as an existing patient | Allowed (unique per entity type) | TC-FR01-04 |
+| Patient lookup | Blank, space-only, None or 1 | ValueError | TC-FR02-02 |
+| Patient lookup | ' P1 ' (spaces) / p1 (wrong case) | ' P1 ' finds P1, p1 raises LookupError | TC-FR02-02 |
+| Patient lookup | Valid but unregistered ID | LookupError | TC-FR02-01 |
+| Booking | Unknown practitioner | LookupError - list_appointments() empty | TC-FR04-02 |
+| Booking | Same practitioner, exact same time as a SCHEDULED appointment | ValueError - store holds only the original | TC-FR05-01 |
+| Booking | Same practitioner, one minute later | Allowed | TC-FR05-02 |
+| Booking | Same practitioner and time after the first booking was cancelled | Allowed - first stays CANCELLED | TC-FR05-03 |
+| Cancellation | Already CANCELLED | ValueError - status stays CANCELLED | TC-FR06-02 |
+| Cancellation | COMPLETED | ValueError - status stays COMPLETED | TC-FR06-03 |
+| Cancellation | Unknown ID / blank ID | LookupError / ValueError | TC-FR06-04 |
 
 ## H GitHub Copilot Test Design
 
 Select ONE real acceptance criterion. Complete human-first fields before using Copilot. Do not require an accepted generated test.
 
-Requirement: [complete]
-Acceptance criterion: [quote]
-Behaviour to test: [complete]
-Human-first test idea/categories: [complete]
-Prompt and purpose: [complete or link]
+Requirement: FR-05 Prevent practitioner conflict
+Acceptance criterion: AC-04.1 and AC-04.2: Same practitioner, exact time and an existing SCHEDULED appointment conflicts; another practitioner at the same time is allowed.
+Behaviour to test: New booking is rejected when the same practitioner already has a SCHEDULED appointment for the same date and time. Different practitioners at the same time are allowed.
+Human-first test idea/categories:
+- Same practitoner, same time → Rejected.
+- Different practitioner, same time → Accepted.
+- Same practitioner, one minute later → Accepted.
+- Same practitioner and same time, but after cancellation → Accepted.
+Prompt and purpose: Used the Stage 7 Copilot prompt to generate candidate tests for FR-05.
 
 For each significant candidate, copy this entry as needed:
-- Copilot test idea/candidate: [complete]
-- What it claims to verify: [complete]
-- Requirement trace: [complete]
-- Assertion quality: [complete]
-- Human critique: [complete]
-- Decision: [Accept / Modify / Reject]
-- Reason: [complete]
-- Final test reference if accepted/modified: [link or not retained]
-- Actual verification result: [complete; do not claim an unrun test passed]
+**Candidate 1**
+- Copilot test idea/candidate: Attempt to create two appointments with the same practitioner and exact same time.
+- What it claims to verify: Practitioner conflict checking.
+- Requirement trace: FR-05 / AC-04.1
+- Assertion quality: Strong.
+- Human critique: Verifies required behaviour.
+- Decision: Accept
+- Reason: Directly checks the required conflict rule.
+- Final test reference if accepted/modified: test_services.py::test_conflict_rejected_and_store_unchanged
+- Actual verification result: Passed
+
+**Candidate 2**
+- Copilot test idea/candidate: Verify a booking succeeds if the practitioner is available one minute later.
+- What it claims to verify: Valid non-conflicting booking.
+- Requirement trace: FR-05 / AC-04.2
+- Assertion quality: Strong.
+- Human critique: Matches the SmartCare contract and checks an allowed booking scenario.
+- Decision: Accept
+- Reason: Verifies that conflict checking is not over-restrictive.
+- Final test reference if accepted/modified: test_services.py::test_booking_one_minute_later_is_allowed
+- Actual verification result: Passed
+
+**Candidate 3**
+- Copilot test idea/candidate: Verify overlapping appointment durations are rejected.
+- What it claims to verify: Practitioner conflict checking.
+- Requirement trace: None
+- Assertion quality: N/A
+- Human critique: Duration overlap is not included in SmartCare's requirements (only same date/time restrictions are needed).
+- Decision: Reject
+- Reason: Out of scope.
+- Final test reference if accepted/modified: N/A
+- Actual verification result: N/A
 
 Before accepting: traces to a requirement/criterion; can fail for the right reason; assertion checks required behaviour; no invented business rule; no unnecessary private implementation dependence. Reject/modify weak assertions, invented requirements, excessive mocking, duplicates, wrong exceptions, obsolete architecture and unnecessary dependencies.
 
 ## I Weak Copilot Test Reflection
 
-Which Copilot-generated test looked convincing but was weak? [response]
-Why was it weak? [response]
-How did you strengthen it? [response]
-Accepted / modified / rejected test decisions and evidence: [link actual decisions in H]
+**Which Copilot-generated test looked convincing but was weak?:** 
+Candidate 3 (rejecting overlapping appointment durations). It sounded like a sensible conflict test, but SmartCare only conflicts on the same practitioner at the exact same date and time (out of scope).
+
+**Why was it weak?:**
+It tested a rule that wasn't outlined in the requirements.
+
+**How did you strengthen it?:**
+I rejected it and kept the tests in scope. 
+
+**Accepted / modified / rejected test decisions and evidence:** Accepted: Candidate 1 (conflict rejection) and Candidate 2 (valid booking 1 minute later). Rejected: Candidate 3 (appointment duration overlap check).
 
 ## J Regression Run
 
@@ -202,19 +261,26 @@ Run python -m pytest from project/. Retain all accumulated tests. Record the tes
 
 | Command | Working directory | Code SHA | Passed | Failed | Failure summary | Product defect / test defect / unresolved | Evidence and interpretation |
 |---|---|---|---|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] | [complete] | [complete] | [complete] | [complete] |
+| python -m pytest | project/ | 8b49c66 | 56 | 0 | | | All tests pass together. Stage 7 extended services tests were not included in this run. |
+| python -m pytest | project/ | ad4ffea | 65 | 0 | | | All tests passed together, included extended service tests. |
 
-Individual test runs and changed-order independence evidence: [commands, results, links]
-Optional tutor-led demonstration notes: [optional; leave blank if not used]
+Individual test runs and changed-order independence evidence: 
+- `python -m pytest tests/test_services.py::test_cancelled_booking_frees_slot` → 1 passed in 0.12s
+- `python -m pytest tests/test_domain.py::TestPatient::test_rejects_blank_id` → 1 passed in 0.10s
+Optional tutor-led demonstration notes: N/A
 A meaningful test should detect a relevant incorrect result. Students do not have to perform the demonstration or submit failure/restoration evidence for assessment. The tutor restores the example and reruns its tests. This is not a Stage 8 fault activity.
-Requirement → test → failure/observation → diagnosis → change → verification: [concise links where applicable]
+Requirement → test → failure/observation → diagnosis → change → verification: No failures to diagnose. The first run collected 56 tests, which showed the extended service tests still had to be added, and after adding them the suite passed with 65.
 
 ## K What the Suite Still Does Not Prove
 
-What does your test suite still not prove? [response]
-Coverage if used: [result or not used]
-Which uncovered areas matter, and why does coverage percentage alone not establish correctness? [response]
-Optional fixtures/parametrisation used and why, if any: [response or not used]
+What does your test suite still not prove?:
+- It only covers the cases we wrote, using fixed synthetic data. Other IDs or times could behave differently.
+- The domain tests for rejected cancellations check the exception but not that the status is unchanged afterwards.
+- Failed lookups aren't shown to leave the stores unchanged.
+- It doesn't cover the console, queries or menu, which belong to later stages.
+Coverage if used: Not used
+Which uncovered areas matter, and why does coverage percentage alone not establish correctness?: Coverage only shows which lines ran, not whether the assertions check the right behaviour, so we didn't use it.
+Optional fixtures/parametrisation used and why, if any: Not used.
 
 ## L Git and Review Evidence
 
@@ -222,7 +288,8 @@ Use links rather than copying GitHub history. Continue the Stage 6 workflow; no 
 
 | Issue/task | Branch | PR | Reviewer | Key feedback | Outcome |
 |---|---|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] | [complete] | [complete] |
+| Domain Tests | documentation/s6_Adharv | https://github.com/AdharvKaimal/st1-assignment-3/pull/9 | jesshall902 | N/A | 29/10/26 |
+| Stage 7 extended service tests | docs/stage6_stage7 | https://github.com/AdharvKaimal/st1-assignment-3/pull/14 | krestianreyes13 | N/A | 9/11/26 |
 
 ## M Contribution Evidence
 
@@ -230,7 +297,8 @@ Record actual work in test design, implementation, review, traceability, diagnos
 
 | Member | Actual contribution | Evidence link |
 |---|---|---|
-| [complete] | [complete] | [complete] |
+| jesshall902 | Drafted an initial test_domain.py on feature/stage7-domain-tests - an extended version was later merged via PR #9. Added the Stage 7 extended service tests (9) to test_services.py and helped complete sections F to O for Stage 7's documentation | https://github.com/AdharvKaimal/st1-assignment-3/compare/main...feature/stage7-domain-tests, https://github.com/AdharvKaimal/st1-assignment-3/pull/14 |
+| krestianreyes13 | Helped draft, review, and provide feedback on documentation sections (particular F-O), and reviewed the extended test_services.py tests | https://github.com/AdharvKaimal/st1-assignment-3/pull/14 |
 
 ## N Formative Questions
 
@@ -286,9 +354,9 @@ value in ensuring the quality and requirements are met for a program.
 
 ## O Stage Completion
 
-Tested Stage 7 main SHA: [complete]
-Full-suite result: [complete]
-Unresolved defects and effect on baseline: [complete or none]
-Clean working tree and integration evidence: [complete]
-Stage 8 handover status: [complete; no Stage 8 work assigned]
-All tutorial/formative responses and traceability/Copilot decisions complete: [confirm]
+Tested Stage 7 main SHA: 7635218 
+Full-suite result: python -m pytest, project/, 65 passed, 0 failed
+Unresolved defects and effect on baseline: None.
+Clean working tree and integration evidence: git status clean on main after pulling.
+Stage 8 handover status: Ready for tutor checkpoint.
+All tutorial/formative responses and traceability/Copilot decisions complete: F to K and N are completed, just awaiting update results for B-E, and member contributions.
